@@ -12,6 +12,7 @@ function [ x, A, S, J ] = asseNeutro( b, h, As, d, N, M ,n)
 %   N: sforzo normale
 %   M: momento flettente
 %   n: rapporto tra modulo elastico acciaio/cls
+
 if N == 0
     x0 = h/2;    % variabile di primo tentativo
     err = 1;    % inzializzazione variabile di controllo del ciclo
@@ -38,7 +39,7 @@ else
     end
 end
 A = b*x + n*sum(As);  % area omogeneizzata
-S = b*x^2/2 + n*sum(As.*(x-d)); %momento statico omogeneizzato rispetto all'asse neutro
+S = b*x^2/2 + n*sum(As.*(x-d)); % momento statico omogeneizzato rispetto all'asse neutro
 J = b*x^3/3 + n*sum(As.*(d-x).^2);  % momento di inerzia omogeneizzato rispetto all'asse neutro
 end
 
