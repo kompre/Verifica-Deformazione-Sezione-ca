@@ -8,6 +8,9 @@ function [ Fx ] = integraleIndefinito( fx, x, cost )
 %   necessario calcolare la costante c0 per traslare il vettore delle
 %   ordinate della quantità necessaria affinché le ascisse combacino con le
 %   ordinate.
+%
+%   *** È strettamente necessario che il vettore x contenga lo 0 ***
+%
 %   Il metodo di integrazione utilizzato è quello dei trapezi, pertanto di
 %   misura il valore medio di fx tra due punti consecutivi. Tale valore
 %   (fm) è moltiplicato per il passo di integrazione dx e costituisce
@@ -15,6 +18,14 @@ function [ Fx ] = integraleIndefinito( fx, x, cost )
 %       fx: un vettore contenente i valori della funzione integranda;
 %       x: vettore delle ascisse (valori ordinati)
 %       cost:   costante di integrazione
+
+if isempty(find(x==0,1))
+    disp('ATTENZIONE: il vettore x non contiene lo 0!')
+    disp('La funzione è definita solo per intervalli contenenti "x = 0"')
+    disp('e.g.: [a, 0], [0, b], [a<=0, b>=0]')
+    Fx = nan;
+    return 
+end
 
 dx = x(2) - x(1);     % passo di integrazione ( si assume che x sia equispaziato)
 a = min(x); % limite inferiore dell'intervallo x
