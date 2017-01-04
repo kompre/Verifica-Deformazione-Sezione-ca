@@ -1,28 +1,21 @@
-function [s_min] = calcoloFreccia( L, geom, arm, mat, soll, cost, dx)
-%% dati sezione
-% dati geometrici
-% b = [1000];
-% L = 4;  % [m] luce libera di inflessione
-% dati armatura
-% nb = [5;5];
-% diam = [12;12];
-% d = [40;260];
-% dati materiale
-% mat.cls = derivaCaratteristicheCA(25,30);
-% mat.steel = derivaCaratteristicheAcciaio;
-n = mat.steel.Es/mat.cls.E_cm; % coefficiente di omogeneizzazione
+function [s_min] = calcoloFreccia( L, geom, arm, mat, soll, cost, dx, varargin)
+
+if length(varargin) < 2
+    tipo = 'accurato';
+else
+    tipo = varargin{1};
+    f_el = varargin{2};
+end
+
 % dati sollecitazione
 Fd = soll.q;  % [kN/m2] carico agente in condizioni SLE
 Ned = soll.N;
 M = soll.M;   % funzione del momento sollecitante per trave 1 campata
-% cost.c = 0.5;    % parametro per il calcolo di zeta [0.5 per carichi lunga durata/ripetuti, 1 per breve duarat]
-% % condizioni al contorno
-% cost.rot = 0;   % c.i. rotazione
-% cost.spo = 0;   % c.i. spostamento
-% dati punti di calcolo
-% dx = .001;  % passo dell'integrazione
+% dati vari
 x = 0:dx:L; % vettore delle ascisse dei punti di calcolo
-%%
+n = mat.steel.Es/mat.cls.E_cm; % coefficiente di omogeneizzazione
+
+%% Proprietà della sezione
 sez = rettangolo(geom.b, geom.h, geom.x0, geom.y0, 100, 100);    % discretizzazione della sezione in c.a. in rettangoli infitesimali
 reb = rebarDistr(arm.nb, arm.diam, arm.d, -geom.b/2, geom.b/2);   % distribuzione delle barre di armatura nella sezione
 
@@ -66,9 +59,15 @@ end
 Jef = zeta * sezfes.Jx + (1 - zeta) * prop.cls.Jxg; % momento di inerzia efficace
 Jef = mean(Jef);
 
-curvatura = Med*1e6/(mat.cls.E_cm * Jef);  % curvatura
-rotazione = integraleIndefinito(curvatura, x*1e3, cost.rot);  % rotazione
-spostamento = integraleIndefinito(rotazione, x*1e3, cost.spo);  % rotazione
-s_min = min(spostamento); % freccia massima
+if strcmp(tipo, 'accurato')
+    curvatura = Med*1e6/(mat.cls.E_cm * Jef);  % curvatura
+    rotazione = integraleIndefinito(curvatura, x*1e3, cost.rot);  % rotazione
+    spostamento = integraleIndefinito(rotazione, x*1e3, cost.spo);  % rotazione
+    s_min = min(spostamento); % freccia massima
+elseif strcmp(tipo, 'semplificato')
+    alpha.fes = prop.cls.Jxg/Jef;   % parametro di amplificazione della freccia elastica
+    s_min = alpha.fes * f_el(Fd, L*1e3, mat.cls.E_cm, prop.cls.Jxg);
+end
+
 end
 
