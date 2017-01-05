@@ -21,7 +21,7 @@ mat.cls = derivaCaratteristicheCA(25,30);
 mat.steel = derivaCaratteristicheAcciaio;
 
 fcd = mat.cls.f_cd;
-fyd = mat.steel.fyd;
+fyd = mat.steel.f_yd;
 
 ris = struct('fi_b',0,'fi_a',0,'Mrd',0,'ratio',0,'lx',0,'la',0,'lt',0,'ltot',0,'peso_base',0,'peso_add',0,'peso_tot',0);
 ris = repmat(ris, length(fi_b), 1);
