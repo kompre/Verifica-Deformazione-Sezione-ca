@@ -1,18 +1,41 @@
-function [s_min] = calcoloFreccia( L, geom, arm, mat, soll, cost, dx, varargin)
+function [s_min] = calcoloFreccia( L, geom, arm, fck, c, dx, soll, tipo, valueTipo)
+%  Calcolo della freccia elastica della trave in ca
+%   calcolo della freccia elastica per trave in c.a. di luce 'L', di
+%   sezione 'geom' e armatura 'arm', soggetta alla sollecitazione 'soll'.
+%   La funzione offre 2 tipologie di calcolo, specificate in varargin:
+%       'accurato': calcola la deformata tramite integrale indefinito a
+%       partire dalla curvatura. valueTipo = [rot, spo] i.e. costanti
+%       dell'integrale per rotazione (1) e spostamento (2);
+%       'semplificato': calcola la freccia con la funzione 'f_el'
+%       specificata in valueTipo;
 
-if length(varargin) < 2
-    tipo = 'accurato';
-else
-    tipo = varargin{1};
-    f_el = varargin{2};
+%% estrazione dati
+cost.c = c;     % costante per il calcolo del parametro zeta (0.5, 1)
+
+% tipologia di analisi
+% se tipo='accurato', allora valueTipo è un vettore 2x1 dove il primo
+% elemento è la costante di integrazione della rotazione ed il secondo
+% elemento è la costante di intergazione dello spostamento;
+% se tipo='semplificato', allora valueTipo è una funzione anonima, che
+% specifica il valore della freccia max in mezzeria della trave;
+switch lower(tipo{1})
+    case 'accurato'
+        cost.rot = valueTipo(1); 
+        cost.spo = valueTipo(2);
+    case 'semplificato'
+        tipo = 'semplificato';
+        f_el = valueTipo;
 end
 
 % dati sollecitazione
 Fd = soll.q;  % [kN/m2] carico agente in condizioni SLE
 Ned = soll.N;
 M = soll.M;   % funzione del momento sollecitante per trave 1 campata
+
 % dati vari
 x = 0:dx:L; % vettore delle ascisse dei punti di calcolo
+mat.cls = derivaCaratteristicheCA(fck);
+mat.steel = derivaCaratteristicheAcciaio;
 n = mat.steel.Es/mat.cls.E_cm; % coefficiente di omogeneizzazione
 
 %% Proprietà della sezione
@@ -20,7 +43,7 @@ sez = rettangolo(geom.b, geom.h, geom.x0, geom.y0, 100, 100);    % discretizzazi
 reb = rebarDistr(arm.nb, arm.diam, arm.d, -geom.b/2, geom.b/2);   % distribuzione delle barre di armatura nella sezione
 
 % caratteristiche sezione cls
-prop.cls = sectionProperty(sez);    
+prop.cls = sectionProperty(sez);
 
 % caratteristiche sezione acciaio
 prop.steel = rebarProperty(reb);
@@ -43,7 +66,7 @@ alpha.nf = (mat.cls.E_cm * prop.cls.Jxg) / (mat.steel.Es/n *prop.ca.Jxg); % rapp
 % amplificativo pari al rapporto tra il momento di inerzia della sezione
 % lorda di cls (è ignorato il contributo delle barre) e il momento di
 % inerzia intermedio tra la sezione non fessurata e la sezione fessurata
-% (con barre). 
+% (con barre).
 
 Med = M(Fd,L,x);    %calcolo del momento sollecitante lungo l'asse
 
