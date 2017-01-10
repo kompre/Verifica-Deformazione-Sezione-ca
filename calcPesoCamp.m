@@ -85,6 +85,7 @@ for i_r = 1:length(ris)
     [row,~] = size(conci);
     lx = zeros(row, 1);
     L_tot = 0;
+    ris(i_r).Lp_fi2 = struct;
     for j = 1:row
         % determina se il concio è posto alle estremità della trave, oppure
         % se è interno. Nel caso sia alle estremità, la lunghezza di

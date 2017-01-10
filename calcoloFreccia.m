@@ -18,7 +18,7 @@ cost.c = c;     % costante per il calcolo del parametro zeta (0.5, 1)
 % elemento è la costante di intergazione dello spostamento;
 % se tipo='semplificato', allora valueTipo è una funzione anonima, che
 % specifica il valore della freccia max in mezzeria della trave;
-switch lower(tipo{1})
+switch lower(tipo)
     case 'accurato'
         cost.rot = valueTipo(1); 
         cost.spo = valueTipo(2);
@@ -36,7 +36,7 @@ M = soll.M;   % funzione del momento sollecitante per trave 1 campata
 x = 0:dx:L; % vettore delle ascisse dei punti di calcolo
 mat.cls = derivaCaratteristicheCA(fck);
 mat.steel = derivaCaratteristicheAcciaio;
-n = mat.steel.Es/mat.cls.E_cm; % coefficiente di omogeneizzazione
+n = mat.steel.E_s/mat.cls.E_cm; % coefficiente di omogeneizzazione
 
 %% Proprietà della sezione
 sez = rettangolo(geom.b, geom.h, geom.x0, geom.y0, 100, 100);    % discretizzazione della sezione in c.a. in rettangoli infitesimali
@@ -57,7 +57,7 @@ prop.ca.Jxg = prop.cls.Jxg + prop.cls.A*(prop.cls.yg-prop.ca.yg)^2 + n*(prop.ste
 %% Calcolo del momento di prima fessurazione
 W_min = prop.ca.Jxg/min(prop.ca.yg,(sum(geom.h)-prop.ca.yg));
 Mf = W_min*mat.cls.f_ctm*1e-6; % momento di prima fessurazione [kNm]
-alpha.nf = (mat.cls.E_cm * prop.cls.Jxg) / (mat.steel.Es/n *prop.ca.Jxg); % rapporto momento di inerzia sezione non fessurata
+alpha.nf = (mat.cls.E_cm * prop.cls.Jxg) / (mat.steel.E_s/n *prop.ca.Jxg); % rapporto momento di inerzia sezione non fessurata
 %% Calcolo asse neutro per sezione fessurata
 [sezfes.x, sezfes.A, sezfes.Sx, sezfes.Jx] = asseNeutro(geom.b, geom.h, reb(:,3),reb(:,2),Ned,Mf,n); % N e M sono necessari sono nel caso di N > 0
 
