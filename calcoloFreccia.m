@@ -1,4 +1,4 @@
-function [s_min] = calcoloFreccia( L, geom, arm, fck, c, dx, soll, tipo, valueTipo)
+function [s_min, spostamento, rotazione, curvatura] = calcoloFreccia( L, geom, arm, fck, c, dx, soll, tipo, valueTipo)
 %  Calcolo della freccia elastica della trave in ca
 %   calcolo della freccia elastica per trave in c.a. di luce 'L', di
 %   sezione 'geom' e armatura 'arm', soggetta alla sollecitazione 'soll'.

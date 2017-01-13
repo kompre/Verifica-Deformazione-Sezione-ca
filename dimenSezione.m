@@ -159,7 +159,7 @@ for i_nb1 = 1:length(nb1v)
                     Mrd = 0;
                 else
                     % calcolo del momento resistente
-                    dicotomico('x','[N, M]', func, Ned, 0, H, precisione)
+                    brent('x','[N, M]', func, Ned, 0, H, 'precisione', precisione);
                     Mrd = M*1e-6;
                 end
                 
@@ -193,20 +193,21 @@ for i_nb1 = 1:length(nb1v)
                 ris(i_r).ratio = abs(Med)/Mrd;
             end
             %% condizione di fine ciclo
-            if or(fi(2) == 0, fi(1) == fi(2))
+            if and(or(fi(2) == 0, fi(1) == fi(2)), Mrd >= abs(Med))
                 break
             end
             
         end
-        if and(fi(2) == 0, Mrd >= Med)
+        if and(fi(2) == 0, Mrd >= abs(Med))
             break
         end
     end
 end
 %% eliminazione dei campi vuoti
-risTable = struct2table(ris);
-campi_pieni = risTable.fi1>0;    % vettore logico dei campi non vuoti
-risTable = risTable(campi_pieni, :);
-ris = table2struct(risTable);   % riconverto la tabella in struct
+for i = length(ris)
+    if ris(i).nb1 == 0
+        ris(i) = [];
+    end
+end
 
 end

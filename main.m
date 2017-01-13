@@ -7,7 +7,7 @@ clc
 % effettiva di calcolo è pari a (Lpl + Ltr)^2.
 
 % freccia limite
-f_lim = 1/3000;
+f_lim = 1/2500;
 
 % Dati geometrici sezione della platea
 geom.pl.b = 1000;
@@ -28,15 +28,20 @@ geom.tr.sezione = rettangolo(geom.tr.b, geom.tr.h, geom.tr.x0, geom.tr.y0, 1, 10
 fck = 25;
 
 % dati sollecitazione della platea
-soll.pl.q = 66.3;  % [kN/m2] carico agente in condizioni SLE
+% composizione del carico:
+%   G1 = 16.3 kN/m2
+%   Qk = 50.0 kN/m2
+soll.pl.q = 50;  % [kN/m2] carico agente in condizioni SLE
 soll.pl.qSLU = 96.19;  % [kN/m2] carico agente in condizioni SLU
 soll.pl.N = 0;
 soll.pl.M = @(q,l,x) -q*x.^2/2 + q*l/2*x - q*l^2/12;   % funzione del momento sollecitante per trave 1 campata
+soll.pl.V = @(q,l,x) -q*x + q*l/2; % taglio lungo l'asse della trave
 % dati sollecitazione della trave
 soll.tr.q = 0;  % inizializzo il valore di carico da stimare per ogni iteraizione in funzione della luce di inflessione della platea
 soll.tr.qSLU = 0;  % idem come sopra
 soll.tr.N = 0;
 soll.tr.M = @(q,l,x) -q*x.^2/2 + q*l/2*x - q*l^2/12;   % funzione del momento sollecitante per trave 1 campata
+soll.tr.V = @(q,l,x) -q*x + q*l/2;
 
 %% LIMITAZIONI AL PROBLEMA DI OTTIMIZZAZIONE
 % Di seguito si elencano le limitazioni e le costanti che caratterizzano
@@ -65,14 +70,14 @@ dx = 0.001;
 
 % dati armatura platea superiore
 arm.pl.sup.fi_lim = [10, 24];
-arm.pl.sup.nb1 = 5;
+arm.pl.sup.nb1 = 3:5;
 arm.pl.sup.nb2 = 5;
 arm.pl.sup.lock = 'yes';
 arm.pl.sup.d = 40;
 
 % arm inferiore platea inferiore
 arm.pl.inf.fi_lim = [10, 24];
-arm.pl.inf.nb1 = 5;
+arm.pl.inf.nb1 = 3:5;
 arm.pl.inf.nb2 = 0;
 arm.pl.inf.lock = 'no';
 arm.pl.inf.d = 260;
@@ -123,9 +128,16 @@ M.tr = repmat(M.tr, length(L.pl), length(L.tr));
 
 % preallocamento risultati della freccia
 ris.pl.s_min = ones(size(length(L.pl)))*nan;
+ris.pl.s_rel = ones(size(length(L.pl)))*nan;
+ris.pl.s_logico = ones(size(length(L.pl)))*nan;
+
 ris.tr.s_min = ones(length(L.pl), length(L.tr))*nan;
+ris.tr.s_rel = ones(length(L.pl), length(L.tr))*nan;
+ris.tr.s_logico = ones(length(L.pl), length(L.tr))*nan;
+
 ris.tot.s_min = ones(length(L.pl), length(L.tr))*nan;
 ris.tot.s_rel = ones(length(L.pl), length(L.tr))*nan;
+ris.tot.s_rel2 = ones(length(L.pl), length(L.tr))*nan;
 ris.tot.s_logico = false(length(L.pl), length(L.tr));
 
 soll.tr = repmat(soll.tr, length(L.pl), 1); % sollecitazioni per travi (funzione di L.pl)
@@ -168,6 +180,11 @@ ris.costo.pali = ones(length(L.pl), length(L.tr)) * nan;
 ris.costo.tot = ones(length(L.pl), length(L.tr)) * nan;
 
 %% Calcolo della freccia
+ite.current = 0;
+ite.numMax = length(L.pl)*length(L.tr);
+ite.progress = @(i) i/ite.numMax;
+hw = waitbar(ite.progress(ite.current), sprintf('Iterazione %d di %d\n%0.2f%%', ite.current, ite.numMax, ite.progress(ite.current)*100));
+%%
 for i_pl = 1:length(L.pl)
     
     %% dimensionamento platea
@@ -234,7 +251,8 @@ for i_pl = 1:length(L.pl)
     
     %% dimensionamento della trave
     for i_tr = 1:length(L.tr)
-        
+        ite.current = ite.current +1;
+        waitbar(ite.progress(ite.current), hw, sprintf('Iterazione %d di %d\n%0.2f%%', ite.current, ite.numMax, ite.progress(ite.current)*100));
         if armaturaValida.pl(i_pl)
             % sollecitazione agente
             M.tr(i_pl, i_tr).inf = soll.tr(i_pl).M(soll.tr(i_pl).qSLU, L.tr(i_tr), L.tr(i_tr)/2);    % momento in mezzeria, in funzione della luce
@@ -252,7 +270,6 @@ for i_pl = 1:length(L.pl)
                     sezione_(:,2) = geom.tr.h - geom.tr.sezione(:,2);
                     d_ = geom.tr.h - arm.tr.(supinf{i_si}).d;
                 end
-                
                 armTemp = dimenSezione(sezione_, d_, arm.tr.(supinf{i_si}).fi_lim, arm.tr.(supinf{i_si}).nb1, arm.tr.(supinf{i_si}).nb2, fck, M.tr(i_pl, i_tr).(supinf{i_si}), soll.tr(i_pl).N, 'tipo', 'elastica', 'lock', arm.tr.(supinf{i_si}).lock, 'precisione', 6);
                 armTemp = calcPesoCamp(armTemp, d_, sign(M.tr(i_pl, i_tr).(supinf{i_si})), L.tr(i_tr), M.tr(i_pl, i_tr).mx, 'piegate', 'yes');
                 
@@ -290,13 +307,25 @@ for i_pl = 1:length(L.pl)
         end
     end
 end
+close(hw)
+clear('hw')
 %% Combinazione dei risultati
 for i_pl = 1:length(L.pl)
+    % risultati per la platea
+    ris.pl.s_rel(i_pl) = abs(ris.pl.s_min(i_pl))/(L.pl(i_pl)*1e3);
+    ris.pl.s_logico(i_pl) =  ris.pl.s_rel(i_pl) <= f_lim;
+    
     for i_tr = 1:length(L.tr)
         if and(armaturaValida.pl(i_pl), armaturaValida.tr(i_pl, i_tr))
+            % risultati per le travi
+            ris.tr.s_rel(i_pl, i_tr) = abs(ris.tr.s_min(i_pl, i_tr)/(L.tr(i_tr)*1e3));            
+            ris.tr.s_logico(i_pl, i_tr) = ris.tr.s_rel(i_pl, i_tr) <= f_lim;
+            
+            % platea + travi
             L.tot(i_pl, i_tr) = sqrt(L.pl(i_pl)^2 + L.tr(i_tr)^2);  % lunghezza combinata su cui verificare la freccia limite
             ris.tot.s_min(i_pl, i_tr) = ris.pl.s_min(i_pl) + ris.tr.s_min(i_pl, i_tr);
-            ris.tot.s_rel(i_pl, i_tr) = ris.tot.s_min(i_pl, i_tr)/(L.tot(i_pl, i_tr)*1e3);    % freccia in termini di luce libera di inflessione
+            ris.tot.s_rel(i_pl, i_tr) = abs(ris.tot.s_min(i_pl, i_tr)/(L.tot(i_pl, i_tr)*1e3));    % freccia in termini di luce libera di inflessione
+            ris.tot.s_rel2(i_pl, i_tr) = abs(ris.pl.s_min(i_pl)*1e-3/L.pl(i_pl) + ris.tr.s_min(i_pl, i_tr)*1e-3/L.tr(i_tr));
             ris.tot.s_logico(i_pl, i_tr) = ris.tot.s_rel(i_pl, i_tr) <= f_lim;
         end
     end
@@ -371,17 +400,22 @@ for i_pl = 1:length(L.pl)
         end
     end
 end
+
+[costo_min, I] = min(ris.costo.tot(:));
+[i_min.pl, i_min.tr] = ind2sub(size(ris.costo.tot), I);
 %% grafico delle frecce
 figure(1)
 subplot(1,2,1)
 surf(L.pl, L.tr, ris.tot.s_rel')
+title('Deformazioni massime')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 zlabel('(f_{pl}+f_{tr})/L_{tot}')
 hold on
-surf(L.pl, L.tr, -f_lim*ones(length(L.pl), length(L.tr))')
+surf(L.pl, L.tr, f_lim*ones(length(L.pl), length(L.tr))')
 subplot(1,2,2)
-contourf(L.pl, L.tr, ris.tot.s_logico',1);
+contourf(L.pl, L.tr, ris.tot.s_logico',[0, 1]);
+title('Soluzioni Valide')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 %% grafico dei costi
@@ -389,28 +423,45 @@ figure(2)
 
 subplot(3,2,1)
 plot(L.pl, ris.costo.pl)
+title('Costo Platea')
 xlabel('L_{platea}')
 ylabel('Costo Platea')
 
 subplot(3,2,3)
-surf(L.pl, L.tr, ris.costo.tr')
+[C.tr, hw.tr] = contourf(L.pl, L.tr, ris.costo.tr');
+clabel(C.tr, hw.tr)
+title('Costo Travi')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 zlabel('Costo Travi')
 
 subplot(3,2,5)
-surf(L.pl, L.tr, ris.costo.pali')
+[C.pali, hw.pali] = contourf(L.pl, L.tr, ris.costo.pali');
+clabel(C.pali, hw.pali);
+title('Costo Pali')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 zlabel('Costo pali')
 
 subplot(3,2,[2, 4, 6])
-surf(L.pl, L.tr, ris.costo.tot')
+[C.tot, hw.tot] = contourf(L.pl, L.tr, ris.costo.tot'./costo_min, 1:.05:2);
+clabel(C.tot, hw.tot);
+title('Costo Totale [%]')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 zlabel('Somma Costi')
-
-[costo_min, I] = min(ris.costo.tot(:));
-[i_min.pl, i_min.tr] = ind2sub(size(ris.costo.tot), I);
-
-disp('fine computazione')
+%%
+clc
+fprintf('\nLa soluzione ottimale si ha in corripondenza degli indici:\n')
+fprintf('\t\ti_min\t\tL[m]\n')
+label = {'pl', 'tr'};
+for i = 1:length(label)
+    fprintf('%s\t% 8.0f\t% 8.2f \n', label{i}, i_min.(label{i}), L.(label{i})(i_min.(label{i})))
+end
+fprintf('\nChe corrispondono a %d travi e %d pali per trave, per un totale di %d pali.\n', num.tr(i_min.pl), num.pali_tr(i_min.tr), num.pali(i_min.pl, i_min.tr));
+fprintf('\nLe deformazioni minime per questa combinazione sono pari a:\n');
+fprintf('% -4s\t% 12s\t% 12s\t% s<%.2e\n', '', 's_min[mm]', 's_rel[%]', 's_rel', f_lim );
+fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'pl', ris.pl.s_min(i_min.pl), ris.pl.s_rel(i_min.pl), ris.pl.s_logico(i_min.pl));
+fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tr', ris.tr.s_min(i_min.pl, i_min.tr), ris.tr.s_rel(i_min.pl, i_min.tr), ris.tr.s_logico(i_min.pl, i_min.tr));
+fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tot1', ris.tot.s_min(i_min.pl, i_min.tr), ris.tot.s_rel(i_min.pl, i_min.tr), ris.tot.s_logico(i_min.pl, i_min.tr));
+fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tot2', ris.tot.s_min(i_min.pl, i_min.tr), ris.tot.s_rel2(i_min.pl, i_min.tr), ris.tot.s_rel2(i_min.pl, i_min.tr)<= f_lim);
