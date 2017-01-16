@@ -53,7 +53,7 @@ soll.tr.V = @(q,l,x) -q*x + q*l/2;
 L.X = 56;   % [m] dimensione in x della fondazione
 L.Y = 79;   % [m] dimensione in y della fondazione
 L.b_max = 12; % [m] lunghezza massima delle barre
-num.tr = 10:30; % numeri di travi nella fondazione
+num.tr = 10:29; % numeri di travi nella fondazione
 num.pali_tr = 14:40; % numero di pali per trave
 cu.steel = 0.79; % costo unitatio acciaio [€/kg]
 cu.palo  = 670.08;  % costo unitario palo [€/kg]
@@ -84,7 +84,7 @@ arm.pl.inf.d = 260;
 
 % dati armatura trave superiore
 arm.tr.sup.fi_lim = [14, 24];
-arm.tr.sup.nb1 = [3, 5];
+arm.tr.sup.nb1 = 4;
 arm.tr.sup.nb2 = [0, 4];
 arm.tr.sup.lock = 'no';
 arm.tr.sup.d = 50;
@@ -97,10 +97,17 @@ arm.tr.med.d = [270; 580];
 
 % dati armatura trave inferiore
 arm.tr.inf.fi_lim = [14, 24];
-arm.tr.inf.nb1 = [3, 5];
+arm.tr.inf.nb1 = 4;
 arm.tr.inf.nb2 = [0, 4];
 arm.tr.inf.lock = 'no';
 arm.tr.inf.d = 750;
+
+% dati armatura staffe per le travi
+arm.tr.staffe.nb_sw = 4;
+arm.tr.staffe.fi_sw = 10:2:14;
+arm.tr.staffe.s_lim = [50, 10];
+arm.tr.staffe.cf = 40; % copriferro
+
 
 %% Funzione freccia elastica in mezzeria
 f_el = @(q,l,E,J) -1/384 * q*l^4/(E*J);
@@ -117,14 +124,16 @@ num.pali = num.tr' * num.pali_tr;   % numero totale di pali nelle varie configur
 %% Inizio ciclo principale
 
 % preallocamento variabili di carico
-M.pl.max = 0;
-M.pl.min = 0;
+M.pl.inf = 0;
+M.pl.sup = 0;
 M.pl.mx = 0;
 M.pl = repmat(M.pl, length(L.pl), 1);
-M.tr.max = 0;
-M.tr.min = 0;
+M.tr.inf = 0;
+M.tr.sup = 0;
 M.tr.mx = 0;
 M.tr = repmat(M.tr, length(L.pl), length(L.tr));
+V.tr.mx = 0;
+V.tr = repmat(V.tr, length(L.pl), length(L.tr));
 
 % preallocamento risultati della freccia
 ris.pl.s_min = ones(size(length(L.pl)))*nan;
@@ -159,6 +168,12 @@ ris.pl.arm_inf = ris.pl.arm_sup;
 ris.tr.arm_sup = repmat(ris.pl.arm_sup, 1, length(L.tr));
 ris.tr.arm_inf = ris.tr.arm_sup;
 
+fieldname = {'nb', 'fi', 'Asw', 's', 's_max', 'Asw_s', 'cot_theta', 'Vrsd', 'Vrcd', 'Vrd', 'ratio', 'zona', 'L_zona', 'Q_st', 'Peso'};
+for i = 1:length(fieldname)
+    ris.tr.staffe.arm.(fieldname{i}) = nan;
+end
+ris.tr.staffe = repmat(ris.tr.staffe, length(L.pl), length(L.tr));
+
 % preallocamento risultati del peso
 ris.pl.peso.base = ones(length(L.pl),1) * nan;
 ris.pl.peso.add = ones(length(L.pl),1) * nan;
@@ -166,6 +181,7 @@ ris.pl.peso.tot = ones(length(L.pl),1) * nan;
 
 ris.tr.peso.base = ones(length(L.pl),length(L.tr)) * nan;
 ris.tr.peso.add = ones(length(L.pl),length(L.tr)) * nan;
+ris.tr.peso.staffe = ones(length(L.pl),length(L.tr)) * nan;
 ris.tr.peso.tot = ones(length(L.pl),length(L.tr)) * nan;
 
 % preallocamento variabilli logiche
@@ -258,6 +274,7 @@ for i_pl = 1:length(L.pl)
             M.tr(i_pl, i_tr).inf = soll.tr(i_pl).M(soll.tr(i_pl).qSLU, L.tr(i_tr), L.tr(i_tr)/2);    % momento in mezzeria, in funzione della luce
             M.tr(i_pl, i_tr).sup = soll.tr(i_pl).M(soll.tr(i_pl).qSLU, L.tr(i_tr), 0);    % momento all'appoggio, in funzione della luce
             M.tr(i_pl, i_tr).mx = soll.tr(i_pl).M(soll.tr(i_pl).qSLU, L.tr(i_tr), 0:dx:L.tr(i_tr));
+            V.tr(i_pl, i_tr).vx = soll.tr(i_pl).V(soll.tr(i_pl).qSLU, L.tr(i_tr), 0:dx:L.tr(i_tr));
             
             % dimensionamento dell'armatura superiore/inferiore
             for i_si = 1:length(supinf)
@@ -292,9 +309,21 @@ for i_pl = 1:length(L.pl)
                 end
             end
             
-            % variabili temporanee per il calcolo della freccia. Si considera solo
-            % l'armatura di base per il calcolo della freccia perché in condizioni
-            % semplici. La freccia è sovrastimata in favore di sicurezza;
+            % calcolo dell'armatura a taglio
+            if armaturaValida.tr(i_pl, i_tr)
+                [armSt_, pesoSt_]  = calcPesoStaffe(sezione_, L.tr(i_tr)*1e3, d_, arm.tr.staffe.nb_sw, arm.tr.staffe.fi_sw, armTemp.fi1, arm.tr.staffe.s_lim, fck, soll.tr(i_pl).N, V.tr(i_pl, i_tr).vx, 'copriferro', arm.tr.staffe.cf);
+                if ~isempty(armSt_)
+                    ris.tr.staffe(i_pl, i_tr).arm = armSt_;
+                    ris.tr.peso.staffe(i_pl, i_tr) = pesoSt_;
+                else
+                    armaturaValida.tr(i_pl, i_tr) = false; % flag che segnala se la combinazione di armatura per la luce in oggetto è valida oppure no
+                end
+            end
+            
+            % variabili temporanee per il calcolo della freccia. Si
+            % considera solo l'armatura di base per il calcolo della
+            % freccia perché siamo in condizioni semplici. La freccia è
+            % sovrastimata in favore di sicurezza;
             if armaturaValida.tr(i_pl, i_tr)
                 arm_.nb = [ris.tr.arm_sup(i_pl, i_tr).nb1; arm.tr.med.nb; ris.tr.arm_inf(i_pl, i_tr).nb1];
                 arm_.diam = [ris.tr.arm_sup(i_pl, i_tr).fi1; arm.tr.med.fi; ris.tr.arm_inf(i_pl, i_tr).fi1];
@@ -309,6 +338,7 @@ for i_pl = 1:length(L.pl)
 end
 close(hw)
 clear('hw')
+
 %% Combinazione dei risultati
 for i_pl = 1:length(L.pl)
     % risultati per la platea
@@ -318,7 +348,7 @@ for i_pl = 1:length(L.pl)
     for i_tr = 1:length(L.tr)
         if and(armaturaValida.pl(i_pl), armaturaValida.tr(i_pl, i_tr))
             % risultati per le travi
-            ris.tr.s_rel(i_pl, i_tr) = abs(ris.tr.s_min(i_pl, i_tr)/(L.tr(i_tr)*1e3));            
+            ris.tr.s_rel(i_pl, i_tr) = abs(ris.tr.s_min(i_pl, i_tr)/(L.tr(i_tr)*1e3));
             ris.tr.s_logico(i_pl, i_tr) = ris.tr.s_rel(i_pl, i_tr) <= f_lim;
             
             % platea + travi
@@ -362,26 +392,28 @@ for i_pl = 1:length(L.pl)
         % calcolo del peso delle barre delle travi
         l_.tr = struct;
         for i_tr = 1:length(L.tr)
-            ris.tr.peso.base(i_pl, i_tr) = 0;
-            ris.tr.peso.add(i_pl, i_tr) = 0;
             if ris.tot.s_logico(i_pl, i_tr)
-                % i seguenti parametri sono necessari per il calcolo
-                % dell'armatura continua su tutta la lunghezza di L.Y
-                l_.tr.anc.(supinf{i_si}) = 60*ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).fi1 *1e-3;   % [m]lunghezza di ancoragggio per il diametro fi1 nell'ipotesi scarsa aderenza
-                l_.tr.tra.(supinf{i_si})= 0.9*((2-i_si)*geom.tr.h + (2*(i_si==2) - 1) * arm.tr.(supinf{i_si}).d) * 1e-3; % [m] lunghezza di traslazione del momento
-                l_.tr.beff.(supinf{i_si}) = L.b_max - l_.tr.anc.(supinf{i_si}) - l_.tr.tra.(supinf{i_si});   % [m] lunghezza effettiva delle barre
-                l_.tr.Yeff.(supinf{i_si}) = L.Y/l_.tr.beff.(supinf{i_si}) * L.b_max;   % [m] lunghezza totale delle barre > di L.X perché considera anche le sovrapposizioni
-                % calcola il peso delle barre fi1 i.e. l'armatura di base
-                % continua. Il campo "peso_fi1" è esrpresso in [kg] pertanto è
-                % necessario dividerlo per la lunghezza della campata per
-                % ottenere l'incidenza al metro lineare che moltiplica la
-                % lunghezza efficace l_.pl.Xeff.(...).
-                ris.tr.peso.base(i_pl, i_tr) = ris.tr.peso.base(i_pl, i_tr) + l_.tr.Yeff.(supinf{i_si}) * ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).peso_fi1 / ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).L_fi1 * num.tr(i_pl) ;   % il peso è moltiplicato per L.Y/geom.pl.b per ottenere il totale esteso a tutta la superficie della platea
-                % calcola il peso delle barre addizionali, non continue,
-                % pertanto il peso è pari al peso_fi2
-                ris.tr.peso.add(i_pl, i_tr) = ris.tr.peso.add(i_pl, i_tr) + ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).peso_fi2 * (num.pali_tr(i_tr)-1);
+                ris.tr.peso.base(i_pl, i_tr) = 0;
+                ris.tr.peso.add(i_pl, i_tr) = 0;
+                for i_si = 1:length(supinf)
+                    % i seguenti parametri sono necessari per il calcolo
+                    % dell'armatura continua su tutta la lunghezza di L.Y
+                    l_.tr.anc.(supinf{i_si}) = 60*ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).fi1 *1e-3;   % [m]lunghezza di ancoragggio per il diametro fi1 nell'ipotesi scarsa aderenza
+                    l_.tr.tra.(supinf{i_si})= 0.9*((2-i_si)*geom.tr.h + (2*(i_si==2) - 1) * arm.tr.(supinf{i_si}).d) * 1e-3; % [m] lunghezza di traslazione del momento
+                    l_.tr.beff.(supinf{i_si}) = L.b_max - l_.tr.anc.(supinf{i_si}) - l_.tr.tra.(supinf{i_si});   % [m] lunghezza effettiva delle barre
+                    l_.tr.Yeff.(supinf{i_si}) = L.Y/l_.tr.beff.(supinf{i_si}) * L.b_max;   % [m] lunghezza totale delle barre > di L.X perché considera anche le sovrapposizioni
+                    % calcola il peso delle barre fi1 i.e. l'armatura di base
+                    % continua. Il campo "peso_fi1" è esrpresso in [kg] pertanto è
+                    % necessario dividerlo per la lunghezza della campata per
+                    % ottenere l'incidenza al metro lineare che moltiplica la
+                    % lunghezza efficace l_.pl.Xeff.(...).
+                    ris.tr.peso.base(i_pl, i_tr) = ris.tr.peso.base(i_pl, i_tr) + l_.tr.Yeff.(supinf{i_si}) * ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).peso_fi1 / ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).L_fi1 * num.tr(i_pl) ;   % il peso è moltiplicato per L.Y/geom.pl.b per ottenere il totale esteso a tutta la superficie della platea
+                    % calcola il peso delle barre addizionali, non continue,
+                    % pertanto il peso è pari al peso_fi2
+                    ris.tr.peso.add(i_pl, i_tr) = ris.tr.peso.add(i_pl, i_tr) + ris.tr.(['arm_' supinf{i_si}])(i_pl, i_tr).peso_fi2 * (num.pali_tr(i_tr)-1);
+                end
                 % Peso totale delle travi in funzione di L.tr
-                ris.tr.peso.tot(i_pl, i_tr) = ris.tr.peso.base(i_pl, i_tr) + ris.tr.peso.add(i_pl, i_tr);
+                ris.tr.peso.tot(i_pl, i_tr) = ris.tr.peso.base(i_pl, i_tr) + ris.tr.peso.add(i_pl, i_tr) + ris.tr.peso.staffe(i_pl, i_tr);
             end
         end
     end

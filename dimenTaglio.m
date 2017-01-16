@@ -97,6 +97,20 @@ for i_nb = 1:length(nb_sw)
             s_ = sort(s_lim(indice_s_validi), 'descend');    % riduce il vettore s a solo i rultati validi
             s_min = s_(end);
         end
+        
+        % Massimo Vrcd (cot_theta=1)
+        [~, ~, Vrcd_max, ~] = verificaTaglio(sezione, dmax, Asw, 0, s, alpha, fck, Ned, 'classe', 'A');
+        Vrcd_max = Vrcd_max*1e-3;
+        if Vrcd_max < abs(Ved)
+            % Vrcd è un valore costante per la sezione (a meno di
+            % cot_theta), pertanto se Vrcd(cot_theta=1) < abs(Ved), allora
+            % la sezione non è in grado di essere verificata a taglio e non
+            % ha soluzioni di armatura efficaci
+            error(['La sezione di cls è insufficiente per il taglio sollecitante:\n'...
+                '%6s < %6s\n%6.2f < %6.2f'], 'Vrcd', '|Ved|', Vrcd_max, abs(Ved))
+        end
+        
+        % ciclo principale
         Vrd = 0; % variabile di controllo del ciclo
         while Vrd < abs(Ved)
             if strcmp(passo, 'variabile')
@@ -112,6 +126,8 @@ for i_nb = 1:length(nb_sw)
             Vrd = Vrd*1e-3;
             Vrsd = Vrsd*1e-3;
             Vrcd = Vrcd*1e-3;
+            
+            
             
             % salvataggio dei dati per la soluzione corretta
             if Vrd >= abs(Ved)
@@ -167,7 +183,7 @@ for i_nb = 1:length(nb_sw)
     end
 end
 %% eliminazione delle righe vuote della struct
-while isnan(ris(end).nb)
+while ~isempty(ris) && isnan(ris(end).nb)
         ris(end) = [];
 end
 

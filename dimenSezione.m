@@ -1,4 +1,4 @@
-function [ ris ] = dimenSezione( sezione, d, fi_lim, Nb1, Nb2, fck, Med, Ned, varargin )
+function [ ris ] = dimenSezione( sezione, armatura, fi_lim, Nb1, Nb2, fck, Med, Ned, varargin )
 %DIMENBARRE dimensiona le barre in funzione del momento sollecitante
 %   Dimensiona in automatico la sezione in base ai parametri e limiti
 %   predefiniti, in funzione della sollecitazione agente. Sono previsti al
@@ -12,8 +12,9 @@ function [ ris ] = dimenSezione( sezione, d, fi_lim, Nb1, Nb2, fck, Med, Ned, va
 %   Variabili di input:
 %       sezione:    matrice Nx4, dove la N riga è composta dai 4 elementi
 %       che caratterizzano il rettangolo (xm, ym, dx, dy);
-%       d:  distanza dell'armatura dal lembo compresso della sezione (il
-%       lembo compresso coincide con l'asse delle ascisse)
+%       armatura: [d, nb, fi] matrice Nx3 che contiene i dati base della
+%           armatura. d:  altezza utile della sezione dal lembo compresso (il lembo compresso coincide con l'asse delle ascisse)
+%           nb: numero di barre per livello fi: diametro delle armature di base
 %       fi_lim: [fi_min, fi_max] coppia di valori che indicano il limite
 %       inferiore ed il limite superiore dei diametri da utilizzare per
 %       l'analisi;
@@ -37,42 +38,20 @@ function [ ris ] = dimenSezione( sezione, d, fi_lim, Nb1, Nb2, fck, Med, Ned, va
 
 %% Valori di default ed estrazione argomenti opzionali
 tipo = 'elastica';
-lock = 'no';
+lock = false;
 precisione = 12;
 
-while ~isempty(varargin)
-    switch lower(varargin{1})
-        case 'tipo'
-            tipo = varargin{2};
-        case 'lock'
-            lock = varargin{2};
-        case 'precisione'
-            precisione = varargin{2};
-        otherwise
-            error(['Unexpected option: ' varargin{1}])
-    end
-    varargin(1:2) = [];
-end
+loadOptionalArgument(varargin);
 
-%% funzioni
+%% funzioni e valori di default
 As.fun = @(n,fi) n*pi*fi^2/4; % area di armatura per il diametro e numero di barre
-func = ['calcoloNM(x,sezione, max(d),As.tot,def_not,mat.cls.f_cd,mat.steel.f_yd,''' tipo ''');'];
+func = ['calcoloNM(x, sezione, max(d),As.tot,def_not,mat.cls.f_cd,mat.steel.f_yd,''' tipo ''');'];
+x = 0;
+
+d = armatura(:,1);  
 
 %% estrazione dei vettori della matrice "sezione"
-
-xm = sezione(:,1);  % il primo campo alla coordinata in xm del baricentro dei rettangoli
-ym = sezione(:,2);  % il secondo campo è riservato alla coordinata in ym del baricentro dei rattngoli
-db = sezione(:,3);  % il terzo campo è riservato alla larghezza in x dei rettangoli
-dh = sezione(:,4);  % il quarto campo è riservato alla larghezza in y dei rettangoli
-
-[uym, ih, ~] = unique(ym);    % elimina le componenti duplicate
-H = sum(dh(ih));    % massima altezza della sezione (somma solo una volta dh alla quota ym)
-B = zeros(length(uym),2);
-for i = 1:length(uym)
-    B(i,:) = [sum( abs( db( ym == uym(i) ) ) ), uym(i)]; % larghezza della sezione in funzione dell'altezza
-end
-
-x = 0;
+[~, ~, ~, ~, B, H, uym] = estrazioneSezione(sezione);
 
 %% estrazione delle deformazioni notevoli
 mat.cls = derivaCaratteristicheCA(fck);
@@ -102,7 +81,7 @@ else
     nb1v = Nb1;
 end
 
-if strcmp(lock,'no')
+if not(lock)
     if length(Nb2) > 1
         nb2v = Nb2(1):Nb2(2);  % vettore del numero di righe possibili
         nb2v_ll = nb2v;
@@ -115,11 +94,20 @@ else
     nb2v = nb1v;
 end
 
-% Inizializzazione tabella dei risultati
+%% Inizializzazione tabella dei risultati
 ris = struct('nb1',0, 'nb2',0, 'fi1', 0, 'fi2', 0, 'As1', 0, 'As2', 0, 'As_tot', 0, 'Mrd_fi1', 0, 'Mrd', 0, 'ratio', 0);
 ris = repmat(ris, length(nb1v)*length(nb2v_ll)*length(fiv), 1);
 i_r = 0;
 
+%% determina se deve essere verificato il momento negativo oppure positivo
+if Med < 0.
+    % se il momento è negativo, si inverte l'asse delle ordinate, in quanto
+    % l'origine coincide con il lembo compresso della sezione.
+    sezione(:,2) = H - sezione(:,2);    % inversione delle ym
+    armatura(:,1) = H - armatura(:,1) ; % inversione delle altezze utili d
+end
+
+%% inizio ciclo principale
 for i_nb1 = 1:length(nb1v)
     fi = zeros(2,1);    % vettore 2x1: la componente 1 è relativo al diametro 1, la componente 2 relativa al diametro 2
     
@@ -176,7 +164,8 @@ for i_nb1 = 1:length(nb1v)
                 % aggiornamento variabile di ciclo
                 j = j + 1;
             end
-            %% salvataggio dei risultati
+            
+            % salvataggio dei risultati
             if Mrd >= abs(Med)
                 i_r = i_r + 1;
                 ris(i_r).nb1 = nb1v(i_nb1);
@@ -192,7 +181,8 @@ for i_nb1 = 1:length(nb1v)
                 ris(i_r).Mrd = Mrd;
                 ris(i_r).ratio = abs(Med)/Mrd;
             end
-            %% condizione di fine ciclo
+            
+            % condizione di fine ciclo
             if and(or(fi(2) == 0, fi(1) == fi(2)), Mrd >= abs(Med))
                 break
             end
@@ -203,11 +193,10 @@ for i_nb1 = 1:length(nb1v)
         end
     end
 end
+
 %% eliminazione dei campi vuoti
-for i = length(ris)
-    if ris(i).nb1 == 0
-        ris(i) = [];
-    end
+while ~isempty(ris) && ris(end).nb1==0
+    ris(end) = [];
 end
 
 end
