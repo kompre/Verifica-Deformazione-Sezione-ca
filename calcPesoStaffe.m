@@ -96,7 +96,7 @@ for i_lato = 1:length(lato)
     % dimensiono l'armatura a taglio e salvo la stuttura Nx1 in una
     % variabile temporanea
     try
-        arm_ = dimenTaglio(sezione, d, nb_sw, fi_sw, fi_sl, s_lim, fck, Ned, V.(['cr_', lato{i_lato}]), 'classe', classe, 'zona_critica', false, 'passo', passo);
+        arm_ = dimenTaglio(sezione, max(d), nb_sw, fi_sw, fi_sl, s_lim, fck, Ned, V.(['cr_', lato{i_lato}]), 'classe', classe, 'zona_critica', false, 'passo', passo);
     catch
         return
     end
@@ -123,7 +123,7 @@ for i_lato = 1:length(lato)
     
     % Calcolo del taglio resistente per smax_
     if arm_.s ~= smax_
-        [Vrd_smax, Vrsd_smax, Vrcd_smax, cot_theta_smax] = verificaTaglio(sezione, d, arm_.Asw, 0, smax_, alpha, fck, Ned, 'classe', classe);
+        [Vrd_smax, Vrsd_smax, Vrcd_smax, cot_theta_smax] = verificaTaglio(sezione, max(d), arm_.Asw, 0, smax_, alpha, fck, Ned, 'classe', classe);
          
         % salvo l'armatura di base, che ha stesso numero di braccia e diametro di quella minima
         armBase.(lato{i_lato}) = arm_;

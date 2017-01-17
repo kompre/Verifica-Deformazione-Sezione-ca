@@ -1,6 +1,6 @@
-function [ ris ] = calcPesoCamp( ris, d, segno, L, Med, varargin)
+function [ ris, armatura ] = calcPesoCamp( ris, segno, L, Med, varargin)
 %CALCOLOPESO calcola il peso delle barre di acciaio sulla trave  di
-%lunghezza L per la configurazione di armatura contenuta in ris.
+% lunghezza L per la configurazione di armatura contenuta in ris.
 % Il calcolo è effettuato nelle ipotesi che sia previsti due tipi di
 % armatura: quella base (1) che è applicata lunga tutta la lunghezza della
 % trave L, e quella aggiuntiva (2), applicata solo dove è necessaria, i.e.
@@ -17,13 +17,14 @@ function [ ris ] = calcPesoCamp( ris, d, segno, L, Med, varargin)
 %       Mrd_fi1: momento resistente base;
 %       Mrd:    momento resistente armatura totale;
 %       ratio: rapporto tra Med/Mrd;
+%       armatura: struttura che riassume tutti i livelli dell'armatura
+%       previsti in funzione dell'altezza utile d
 
 %% Valori di default ed estrazione argomenti opzionali
 peso_acciaio = 7850;
 % parametri per lunghezza di ancoraggio
 a1 = 1;     % barre non piegate
 a2 = 60;    % scarsa aderenza
-
 
 while ~isempty(varargin)
     switch lower(varargin{1})
@@ -32,7 +33,7 @@ while ~isempty(varargin)
                 a2 = 40;
             end
         case 'piegate'
-            if strcmp(varargin{2},'yes')
+            if varargin{2}
                 a1 = 0.7;
             end
         otherwise
@@ -40,7 +41,15 @@ while ~isempty(varargin)
     end
     varargin(1:2) = [];
 end
-%%
+
+%% Calcolo della lunghezza delle barre per armatura aggiuntiva (nb2, fi2)
+
+if isempty(ris)
+    armatura = nan;
+    return
+end
+
+
 dx = L/(length(Med)-1);
 x = 0:dx:L;
 for i_r = 1:length(ris)
@@ -70,16 +79,16 @@ for i_r = 1:length(ris)
         end
         cond(1:i_fineConcio) = [];  % elimina il concio trovato in questo ciclo
     end
-    conci = conci( conci(:,3)==1,:);    % elimino i conci dove Mrd>Med 
+    conci = conci( conci(:,3)==1,:);    % elimino i conci dove Mrd>Med
     
     % Lunghezza di ancoraggio
     % a1: fattore di riduzione per barre piegate
     % a2: moltiplicatore del diametro in funzione delle condizioni di
     % aderenza
-    la = a1 * a2 * ris(i_r).fi2 *1e-3;    
+    la = a1 * a2 * ris(i_r).fi2 *1e-3;
     
     % lunghezza di traslazione dei momenti
-    lt = 0.9*max(d)/2 *1e-3;
+    lt = 0.9*max(ris(i_r).armatura.d)/2 *1e-3;
     
     % estrazione delle x
     [row,~] = size(conci);
@@ -108,5 +117,33 @@ for i_r = 1:length(ris)
     ris(i_r).peso_tot = ris(i_r).peso_fi1+ris(i_r).peso_fi2;
 end
 
+%% calcolo del peso per intera sezione
+% preallocamento variabile armatura
+
+armatura = ris.armatura;    % copia solo ris(1).armatura
+armatura.L_fi1 = zeros(size(ris(1).armatura.d));
+armatura.L_fi2 = zeros(size(ris(1).armatura.d));
+armatura.peso_fi1 = zeros(size(ris(1).armatura.d));
+armatura.peso_fi2 = zeros(size(ris(1).armatura.d));
+armatura.peso_tot = zeros(size(ris(1).armatura.d));
+armatura.Peso = 0;
+armatura = repmat(armatura, length(ris), 1);    % a questo punto tutti le righe sono inizializzate a ris(1).armatura, è necessario riaggiornarle al corretto valore
+
+for i_r = 1:length(ris)
+    % aggiornamento dei campi al valore corretto per ciascuna riga
+    armatura(i_r).d = ris(i_r).armatura.d;
+    armatura(i_r).nb1 = ris(i_r).armatura.nb1;
+    armatura(i_r).nb2 = ris(i_r).armatura.nb2;
+    armatura(i_r).fi1 = ris(i_r).armatura.fi1;
+    armatura(i_r).fi2 = ris(i_r).armatura.fi2;
+    armatura(i_r).As1 = ris(i_r).armatura.As1;
+    armatura(i_r).As2 = ris(i_r).armatura.As2;
+    % assegnazione dei valori nuovi
+    armatura(i_r).L_fi1(:) = ris(i_r).L_fi1;
+    armatura(i_r).peso_fi1 = armatura(i_r).As1*1e-6 .* armatura(i_r).L_fi1 * peso_acciaio;
+    armatura(i_r).L_fi2 = sign(armatura(i_r).nb2) .* ris(i_r).L_fi2;
+    armatura(i_r).peso_fi2 = armatura(i_r).As2*1e-6 .* ris(i_r).L_fi2 * peso_acciaio;
+    armatura(i_r).peso_tot = armatura(i_r).peso_fi1 + armatura(i_r).peso_fi2;
+    armatura(i_r).Peso = sum( armatura(i_r).peso_tot );
 end
 

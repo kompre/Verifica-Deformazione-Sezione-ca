@@ -1,4 +1,4 @@
-function [ ris ] = dimenSezione( sezione, armatura, fi_lim, Nb1, Nb2, fck, Med, Ned, varargin )
+function [ ris ] = dimenSezione( sezione, armatura, fiv, Nb1, Nb2, fck, Med, Ned, varargin )
 %DIMENBARRE dimensiona le barre in funzione del momento sollecitante
 %   Dimensiona in automatico la sezione in base ai parametri e limiti
 %   predefiniti, in funzione della sollecitazione agente. Sono previsti al
@@ -18,9 +18,11 @@ function [ ris ] = dimenSezione( sezione, armatura, fi_lim, Nb1, Nb2, fck, Med, 
 %       fi_lim: [fi_min, fi_max] coppia di valori che indicano il limite
 %       inferiore ed il limite superiore dei diametri da utilizzare per
 %       l'analisi;
-%       Nb1:    [Nb1_ min, Nb1_max] coppia di valori che indicano il limite
-%       inferiore e superiore per il numero di barre per il diametro 1
-%       Nb2:    come Nb1, ma per il diametro 2
+%       Nb1:    vettore 1xN contenente il numero di barre possibili
+%       Nb2:    come Nb1, ma per il diametro 2 (porre Nb2 = 0 per nessuna
+%       barra aggiuntiva, oppure 1:x per barre aggiuntive da 0 a x, perché
+%       la possibilità Nb2 = 0 è sempre presa in considerazione.
+%       fiv:    vettore 1xN contenente i diametri possibili
 %       fck:    valore di resistenza caratteristica del cls
 %       Med:    momento sollecitante per il dimensionamento (>0)
 %       Ned:    sforzo normale per il dimensionamento (>0 significa
@@ -34,8 +36,6 @@ function [ ris ] = dimenSezione( sezione, armatura, fi_lim, Nb1, Nb2, fck, Med, 
 %       combinazioni di barre per cui Nb2(i)~=Nb1(j);
 %       precisione: 12; specifica la precisionde del calcolo del Mrd
 
-
-
 %% Valori di default ed estrazione argomenti opzionali
 tipo = 'elastica';
 lock = false;
@@ -45,9 +45,8 @@ loadOptionalArgument(varargin);
 
 %% funzioni e valori di default
 As.fun = @(n,fi) n*pi*fi^2/4; % area di armatura per il diametro e numero di barre
-func = ['calcoloNM(x, sezione, max(d),As.tot,def_not,mat.cls.f_cd,mat.steel.f_yd,''' tipo ''');'];
+func = ['calcoloNM(x, sezione, d, As.tot, def_not, mat.cls.f_cd, mat.steel.f_yd, ''' tipo ''');'];
 x = 0;
-
 d = armatura(:,1);  
 
 %% estrazione dei vettori della matrice "sezione"
@@ -74,30 +73,13 @@ B_medio = (B(a,1) + B(b,1))/2;  % larghezza media della sezione all'altezza dell
 As.min = 0.26 * mat.cls.f_ctm/mat.steel.f_yk * B_medio * d_lim;  % minimo di armatura secondo normativa, per l'estremo superiore ed inferiore
 
 %% determinazione barre minime
-fiv = fi_lim(1):2:fi_lim(2); % vettore dei diametri di armatura possibili
-if length(Nb1)>1
-    nb1v = Nb1(1):Nb1(2);  % vettore del numero di barre possibili
-else
-    nb1v = Nb1;
-end
 
-if not(lock)
-    if length(Nb2) > 1
-        nb2v = Nb2(1):Nb2(2);  % vettore del numero di righe possibili
-        nb2v_ll = nb2v;
-    else
-        nb2v = Nb2;
-        nb2v_ll = nb2v;
-    end
+if lock
+    length_Nb2 = 1;
+    Nb2 = Nb1;
 else
-    nb2v_ll = 1;
-    nb2v = nb1v;
+    length_Nb2 = length(Nb2);
 end
-
-%% Inizializzazione tabella dei risultati
-ris = struct('nb1',0, 'nb2',0, 'fi1', 0, 'fi2', 0, 'As1', 0, 'As2', 0, 'As_tot', 0, 'Mrd_fi1', 0, 'Mrd', 0, 'ratio', 0);
-ris = repmat(ris, length(nb1v)*length(nb2v_ll)*length(fiv), 1);
-i_r = 0;
 
 %% determina se deve essere verificato il momento negativo oppure positivo
 if Med < 0.
@@ -107,8 +89,35 @@ if Med < 0.
     armatura(:,1) = H - armatura(:,1) ; % inversione delle altezze utili d
 end
 
+% estrae d e riordina gli elementi dal più piccolo al più grande.
+% L'elemento più grande corrisponde alla riga che si va a dimensionare. Con
+% idex_d si riordina la matrice armatura in modo tale da avere
+% corrispondenza tra altezze utili d e barre di armatura.
+[d, index_d] = sort(armatura(:,1)); 
+armatura = armatura(index_d,:);
+
+% calcolo dell'area di armatura invariante
+As.tot = zeros(size(d));
+for i_d = 1:length(d)-1
+    As.tot(i_d) = As.fun(armatura(i_d, 2), armatura(i_d, 3));  % nb x fi
+end
+arm = struct(...
+    'd', armatura(:,1),...
+    'nb1', armatura(index_d,2),...
+    'nb2', zeros(size(d)),...
+    'fi1', armatura(index_d,3),...
+    'fi2', zeros(size(d)),...
+    'As1', As.tot(index_d),...
+    'As2', zeros(size(d))...
+    );
+
+%% Inizializzazione tabella dei risultati
+ris = struct('nb1',0, 'nb2',0, 'fi1', 0, 'fi2', 0, 'As1', 0, 'As2', 0, 'As_tot', 0, 'Mrd_fi1', 0, 'Mrd', 0, 'ratio', 0, 'armatura', arm);
+ris = repmat(ris, length(Nb1)*length_Nb2*length(fiv), 1);
+i_r = 0;
+
 %% inizio ciclo principale
-for i_nb1 = 1:length(nb1v)
+for i_nb1 = 1:length(Nb1)
     fi = zeros(2,1);    % vettore 2x1: la componente 1 è relativo al diametro 1, la componente 2 relativa al diametro 2
     
     for i_fiv = 1:length(fiv)
@@ -116,9 +125,8 @@ for i_nb1 = 1:length(nb1v)
         fi(1) = fiv(i_fiv); % itero sui diametri base
         fi(2) = 0;  % azzero il secondo diametro ### (non dovrebbe servire)
         
-        
-        for i_nb2 = 1:length(nb2v_ll)
-            if strcmp(lock,'yes')
+        for i_nb2 = 1:length_Nb2
+            if lock
                 i_nb2locked = i_nb1;
             else
                 i_nb2locked = i_nb2;
@@ -135,15 +143,15 @@ for i_nb1 = 1:length(nb1v)
                 fi(2) = sign(j) * (fiv(i_fiv) + 2 *(j-1));
                 
                 % condizione di interruzione ciclo
-                if fi(2) > max(fi_lim)
+                if fi(2) > max(fiv)
                     break
                 end
                 
                 % calcolo dell'area di armatura
-                As.f1 = As.fun(nb1v(i_nb1),fi(1));
-                As.f2 = As.fun(nb2v(i_nb2locked),fi(2));
-                As.tot = As.f1 + As.f2;
-                if As.f2 > 0 && As.tot < As.min
+                As.f1 = As.fun(Nb1(i_nb1), fi(1));
+                As.f2 = As.fun(Nb2(i_nb2locked), fi(2));
+                As.tot(end) = As.f1 + As.f2;
+                if As.f2 > 0 && As.tot(end) < As.min
                     Mrd = 0;
                 else
                     % calcolo del momento resistente
@@ -157,7 +165,7 @@ for i_nb1 = 1:length(nb1v)
                 
                 % se nel caso in cui non ci siano barre aggiuntive, allora
                 % termina il ciclo perché non ha soluzione
-                if nb2v(i_nb2locked) == 0
+                if Nb2(i_nb2locked) == 0
                     break
                 end
                 
@@ -168,18 +176,31 @@ for i_nb1 = 1:length(nb1v)
             % salvataggio dei risultati
             if Mrd >= abs(Med)
                 i_r = i_r + 1;
-                ris(i_r).nb1 = nb1v(i_nb1);
+                ris(i_r).nb1 = Nb1(i_nb1);
                 ris(i_r).fi1 = fi(1);
                 if fi(2) ~= 0
-                    ris(i_r).nb2 = nb2v(i_nb2locked); % Se il diametro è nullo è inutile riportare una quantità di barre pertanto è lasciato pari a 0
+                    ris(i_r).nb2 = Nb2(i_nb2locked); % Se il diametro è nullo è inutile riportare una quantità di barre pertanto è lasciato pari a 0
                 end
                 ris(i_r).fi2 = fi(2);
                 ris(i_r).As1 = As.f1;
                 ris(i_r).As2 = As.f2;
-                ris(i_r).As_tot = As.tot;
+                ris(i_r).As_tot = As.tot(end);
                 ris(i_r).Mrd_fi1 = Mrd_fi1;
                 ris(i_r).Mrd = Mrd;
                 ris(i_r).ratio = abs(Med)/Mrd;
+                % aggiorno la variabile arm con il valore corrente
+                if Med < 0
+                    i_obb = 1;
+                else
+                    i_obb = length(d);
+                end
+                arm.nb1(i_obb) = ris(i_r).nb1;
+                arm.nb2(i_obb) = ris(i_r).nb2;
+                arm.fi1(i_obb) = ris(i_r).fi1;
+                arm.fi2(i_obb) = ris(i_r).fi2;
+                arm.As1(i_obb) = ris(i_r).As1;
+                arm.As2(i_obb) = ris(i_r).As2;
+                ris(i_r).armatura = arm;
             end
             
             % condizione di fine ciclo
