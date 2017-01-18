@@ -1,0 +1,15 @@
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	      10	    3.11 
+	i_tr	       2	    5.64 
+
+Che corrispondono a 19 travi e 15 pali per trave, per un totale di 285 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.3291	  1.0578e-04	           1
+	tr  	     -1.8833	  3.3374e-04	           1
+	tot1	     -2.2123	  3.4334e-04	           1
+	tot2	     -2.2123	  4.3952e-04	           0
+
+Il costo totale stimato è pari a 283930.98 €

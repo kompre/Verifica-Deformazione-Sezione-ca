@@ -1,4 +1,4 @@
-function [ ris, armatura ] = calcPesoCamp( ris, segno, L, Med, varargin)
+function [ris] = calcPesoCamp( ris, segno, L, Med, varargin)
 %CALCOLOPESO calcola il peso delle barre di acciaio sulla trave  di
 % lunghezza L per la configurazione di armatura contenuta in ris.
 % Il calcolo è effettuato nelle ipotesi che sia previsti due tipi di
@@ -45,7 +45,6 @@ end
 %% Calcolo della lunghezza delle barre per armatura aggiuntiva (nb2, fi2)
 
 if isempty(ris)
-    armatura = nan;
     return
 end
 
@@ -118,32 +117,17 @@ for i_r = 1:length(ris)
 end
 
 %% calcolo del peso per intera sezione
-% preallocamento variabile armatura
-
-armatura = ris.armatura;    % copia solo ris(1).armatura
-armatura.L_fi1 = zeros(size(ris(1).armatura.d));
-armatura.L_fi2 = zeros(size(ris(1).armatura.d));
-armatura.peso_fi1 = zeros(size(ris(1).armatura.d));
-armatura.peso_fi2 = zeros(size(ris(1).armatura.d));
-armatura.peso_tot = zeros(size(ris(1).armatura.d));
-armatura.Peso = 0;
-armatura = repmat(armatura, length(ris), 1);    % a questo punto tutti le righe sono inizializzate a ris(1).armatura, è necessario riaggiornarle al corretto valore
 
 for i_r = 1:length(ris)
-    % aggiornamento dei campi al valore corretto per ciascuna riga
-    armatura(i_r).d = ris(i_r).armatura.d;
-    armatura(i_r).nb1 = ris(i_r).armatura.nb1;
-    armatura(i_r).nb2 = ris(i_r).armatura.nb2;
-    armatura(i_r).fi1 = ris(i_r).armatura.fi1;
-    armatura(i_r).fi2 = ris(i_r).armatura.fi2;
-    armatura(i_r).As1 = ris(i_r).armatura.As1;
-    armatura(i_r).As2 = ris(i_r).armatura.As2;
     % assegnazione dei valori nuovi
-    armatura(i_r).L_fi1(:) = ris(i_r).L_fi1;
-    armatura(i_r).peso_fi1 = armatura(i_r).As1*1e-6 .* armatura(i_r).L_fi1 * peso_acciaio;
-    armatura(i_r).L_fi2 = sign(armatura(i_r).nb2) .* ris(i_r).L_fi2;
-    armatura(i_r).peso_fi2 = armatura(i_r).As2*1e-6 .* ris(i_r).L_fi2 * peso_acciaio;
-    armatura(i_r).peso_tot = armatura(i_r).peso_fi1 + armatura(i_r).peso_fi2;
-    armatura(i_r).Peso = sum( armatura(i_r).peso_tot );
+    ris(i_r).armatura.la_fi1 = 1 * 60 * ris(i_r).armatura.fi1*1e-3;  % lunghezza di ancoraggio in scarsa aderenza. Siccome è per le barre continue, a1 = 1, i.e. non piegate
+    ris(i_r).armatura.lt_fi1(:) = sign(ris(i_r).armatura.nb1) .* lt;  % traslazione dei momenti
+    ris(i_r).armatura.L_fi1 = sign(ris(i_r).armatura.nb1) .* ris(i_r).L_fi1;
+    ris(i_r).armatura.L_fi2 = sign(ris(i_r).armatura.nb2) .* ris(i_r).L_fi2;
+    ris(i_r).armatura.peso_fi1 = ris(i_r).armatura.As1*1e-6 .* ris(i_r).armatura.L_fi1 * peso_acciaio;
+    ris(i_r).armatura.peso_fi2 = ris(i_r).armatura.As2*1e-6 .* ris(i_r).L_fi2 * peso_acciaio;
+    ris(i_r).armatura.peso_tot = ris(i_r).armatura.peso_fi1 + ris(i_r).armatura.peso_fi2;
+    ris(i_r).armatura.Peso = sum( ris(i_r).armatura.peso_tot );
 end
+
 

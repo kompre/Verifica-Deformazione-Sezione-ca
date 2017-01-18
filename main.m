@@ -53,39 +53,45 @@ soll.tr.V = @(q,l,x) -q*x + q*l/2;
 L.X = 56;   % [m] dimensione in x della fondazione
 L.Y = 79;   % [m] dimensione in y della fondazione
 L.b_max = 12; % [m] lunghezza massima delle barre
-num.tr = 10:29; % numeri di travi nella fondazione
-num.pali_tr = 14:40; % numero di pali per trave
+num.tr = 10:29; % numeri di travi nella fondazione 10:29
+num.pali_tr = 14:40; % numero di pali per trave 14:40
 cu.steel = 0.79; % costo unitatio acciaio [€/kg]
 cu.palo  = 670.08;  % costo unitario palo [€/kg]
 peso_acciaio = 7850;    % [kg/m^3] peso unitario dell'acciaio
+RZ_palo.max = 960; % [kN] carico massimo ammissibile per il palo
 
 %%
 % costanti
-cost.c = 0.5;
-cost.rot = 0;
-cost.spo = 0;
+cost.k = 4*sqrt(6)/9; % amplificatzione della freccia per ottenerre il massimo rapporto df/dL in funzione delle condizioni di appoggio (1 per app-app, 4*sqrt(6)/9 per inc-inc)
+f_lim = f_lim/cost.k;
+cost.c = 0.5;   % costante per il calcolo del parametro zeta (c = 0.5 per carichi ripetuti o lunga durata, c = 1 per carichi brevi)
+cost.rot = 0;   % costante di rotazione (integrale della curvatura)
+cost.spo = 0;   % costante di spostamento (integrale della rotazione)
 % passo di integrazione
 dx = 0.001;
 
 %% Dati armatura Platea
 
-arm.pl.tipo = [40, 5, 10; 260 5, 10];  % configurazione dell'armatura tipo per la platea
+arm.pl.template = [40, 0, 0; 260, 0, 0];  % [d, nb, fi] template della configurazione di armatura. La prima riga e l'ultima sono riscritte dalla funzione dimensionante
 
 % armatura superiore
 arm.pl.sup.fiv = 10:2:24;
-arm.pl.sup.nb1 = 5;
-arm.pl.sup.nb2 = 5;
+arm.pl.sup.nb1 = 4:5;
+arm.pl.sup.nb2 = 4:5;
 arm.pl.sup.lock = 'true';
 
 % armatura  inferiore
 arm.pl.inf.fiv = 10:2:24;
-arm.pl.inf.nb1 = 5;
+arm.pl.inf.nb1 = 4:5;
 arm.pl.inf.nb2 = 0;
 arm.pl.inf.lock = 'false';
 
 %% Dati armatura Trave.
 
-arm.tr.tipo = [50, 4, 14; 280, 2, 14, ; 520, 2, 14; 750,  4, 14]; % configurazione dell'armatura tipo per la trave
+arm.tr.template = [ 50, 0, 0;...
+                    280, 2, 14;...
+                    520, 2, 14;...
+                    750,  0, 0]; % [d, nb, fi] template della configurazione di armatura. La prima riga e l'ultima sono riscritte dalla funzione dimensionante
 
 % armatura superiore
 arm.tr.sup.fiv = 14:2:24;
@@ -94,7 +100,7 @@ arm.tr.sup.nb2 = 1:4;
 arm.tr.sup.lock = 'false';
 
 % armatura inferiore
-arm.tr.inf.fiv = [14, 24];
+arm.tr.inf.fiv = 14:2:24;
 arm.tr.inf.nb1 = 4;
 arm.tr.inf.nb2 = 0;
 arm.tr.inf.lock = 'false';
@@ -115,7 +121,9 @@ L.tr = L.Y ./ (num.pali_tr - 1); % [m] variazione della luce libera di inflessio
 
 %% Dati dei pali
 num.pali = num.tr' * num.pali_tr;   % numero totale di pali nelle varie configurazioni size: lenght(num.tr) x length(numpali_tr)
-
+RZ_palo.SLE = L.pl' * L.tr * soll.pl.q;
+RZ_palo.SLU = L.pl' * L.tr * soll.pl.qSLU;
+RZ_palo.cond = RZ_palo.SLE <= RZ_palo.max;
 
 %% Inizio ciclo principale
 
@@ -177,13 +185,14 @@ ris.pl.peso.tot = ones(length(L.pl),1) * nan;
 
 ris.tr.peso.base = ones(length(L.pl),length(L.tr)) * nan;
 ris.tr.peso.add = ones(length(L.pl),length(L.tr)) * nan;
+ris.tr.peso.staffe_tr = ones(length(L.pl),length(L.tr)) * nan;
 ris.tr.peso.staffe = ones(length(L.pl),length(L.tr)) * nan;
 ris.tr.peso.tot = ones(length(L.pl),length(L.tr)) * nan;
 
 % preallocamento variabilli logiche
 armaturaValida.pl = true;
 armaturaValida.pl = repmat(armaturaValida.pl, length(L.pl), 1);
-armaturaValida.tr = repmat(armaturaValida.pl, 1, length(L.tr));
+armaturaValida.tr = RZ_palo.cond;
 
 % preallocamento risultati di costo
 ris.costo.pl = ones(length(L.pl),1) * nan;
@@ -198,7 +207,7 @@ ite.plMax = length(L.pl);
 ite.trMax = length(L.tr);
 ite.numMax = length(L.pl)*length(L.tr);
 ite.progress = @(i) i/ite.numMax;
-hw = waitbar(ite.progress(ite.current), sprintf('Iterazione %d di %d\n%0.2f%%', ite.current, ite.numMax, ite.progress(ite.current)*100));
+wb = waitbar(ite.progress(ite.current), sprintf('Iterazione %d di %d\n%0.2f%%', ite.current, ite.numMax, ite.progress(ite.current)*100));
 
 %% corpo principale
 for i_pl = 1:length(L.pl)
@@ -226,10 +235,10 @@ for i_pl = 1:length(L.pl)
     
     if abs(M.pl(i_pl).inf) <= abs(M.pl(i_pl).sup)
         lembo = {'inf', 'sup'};
-        l_sos = [length(arm.pl.tipo(:,1)), 1];
+        l_sos = [length(arm.pl.template(:,1)), 1];
     else
         lembo = {'sup', 'inf'};
-        l_sos = [1, length(arm.pl.tipo(:,1))];
+        l_sos = [1, length(arm.pl.template(:,1))];
     end
     
     %     for i_lem = 1:length(lembo)
@@ -244,14 +253,14 @@ for i_pl = 1:length(L.pl)
         
         % aggiornamento dell'armatura tipo
         if j == 0
-            arm.pl.tipo(l_sos(~strcmp(lembo{i_lem},lembo)),2:3) = [0, 0];    % per la prima iterazione, l'armatura è semplice
+            arm.pl.template(l_sos(~strcmp(lembo{i_lem},lembo)),2:3) = [0, 0];    % per la prima iterazione, l'armatura è semplice
         else
-            arm.pl.tipo(l_sos(~strcmp(lembo{i_lem},lembo)),2:3) = [ris_.nb1, ris_.fi1];    % aggiorno con i valori dell'iterazione precedente
+            arm.pl.template(l_sos(~strcmp(lembo{i_lem},lembo)),2:3) = [ris_.nb1, ris_.fi1];    % aggiorno con i valori dell'iterazione precedente
         end
         
         % calcolo momento resistente e peso
-        ris_ = dimenSezione(geom.pl.sezione, arm.pl.tipo, arm.pl.(lembo{i_lem}).fiv, arm.pl.(lembo{i_lem}).nb1, arm.pl.(lembo{i_lem}).nb2, fck, M.pl(i_pl).(lembo{i_lem}), soll.pl.N, 'tipo', '''elastica''', 'lock', arm.pl.(lembo{i_lem}).lock, 'precisione', '6');
-        [ris_, armatura_] = calcPesoCamp(ris_, sign(M.pl(i_pl).(lembo{i_lem})), L.pl(i_pl), M.pl(i_pl).mx, 'piegate', true);
+        ris_ = dimenSezione(geom.pl.sezione, arm.pl.template, arm.pl.(lembo{i_lem}).fiv, arm.pl.(lembo{i_lem}).nb1, arm.pl.(lembo{i_lem}).nb2, fck, M.pl(i_pl).(lembo{i_lem}), soll.pl.N, 'tipo', '''elastica''', 'lock', arm.pl.(lembo{i_lem}).lock, 'precisione', '6');
+        ris_ = calcPesoCamp(ris_, sign(M.pl(i_pl).(lembo{i_lem})), L.pl(i_pl), M.pl(i_pl).mx, 'piegate', true);
         
         % questo ciclo while riduce le possibili soluzioni a quella con peso
         % minore
@@ -275,10 +284,10 @@ for i_pl = 1:length(L.pl)
                     ris_.nb1 == ris.pl.(['arm_' lembo{i_lem}])(i_pl).nb1 && ...
                     ris_.nb2 == ris.pl.(['arm_' lembo{i_lem}])(i_pl).nb2 && ...
                     ris_.fi1 == ris.pl.(['arm_' lembo{i_lem}])(i_pl).fi1 && ...
-                    ris_.fi2 == ris.pl.(['arm_' lembo{i_lem}])(i_pl).fi2             
+                    ris_.fi2 == ris.pl.(['arm_' lembo{i_lem}])(i_pl).fi2
                 continua_ciclo.(lembo{i_lem}) = false;
             end
-                ris.pl.(['arm_' lembo{i_lem}])(i_pl) = ris_; % salvo la soluzione temporanea nel struttura globale
+            ris.pl.(['arm_' lembo{i_lem}])(i_pl) = ris_; % salvo la soluzione temporanea nel struttura globale
         else
             armaturaValida.pl(i_pl) = false; % flag che segnala se la combinazione di armatura per la luce in oggetto è valida oppure no
             break
@@ -313,12 +322,16 @@ for i_pl = 1:length(L.pl)
     % loop principale per i_tr
     if armaturaValida.pl(i_pl)
         for i_tr = 1:length(L.tr)
+            % debug
+            if i_pl == 19 && i_tr == 4
+                disp('yo')
+            end
             
             %aggiornamento waitbar
             ite.tr = ite.tr + 1;
-            ite.current = ite.pl*ite.trMax + ite.tr;
-            waitbar(ite.progress(ite.current), hw, sprintf('Iterazione %d di %d\n%0.2f%%', ite.current, ite.numMax, ite.progress(ite.current)*100));
-            
+            ite.current = (ite.pl-1)*ite.trMax + ite.tr;
+            waitbar(ite.progress(ite.current), wb, sprintf('Iterazione %d di %d\n%0.2f%%', ite.current, ite.numMax, ite.progress(ite.current)*100));
+            set(wb, 'Name', sprintf('Progress \n%0.2f%%', ite.progress(ite.current)*100));
             
             % sollecitazione agente
             M.tr(i_pl, i_tr).inf = soll.tr(i_pl).M(soll.tr(i_pl).qSLU, L.tr(i_tr), L.tr(i_tr)/2);    % momento in mezzeria, in funzione della luce
@@ -331,10 +344,10 @@ for i_pl = 1:length(L.pl)
             
             if abs(M.tr(i_pl, i_tr).inf) <= abs(M.tr(i_pl, i_tr).sup)
                 lembo = {'inf', 'sup'};
-                l_sos = [length(arm.pl.tipo(:,1)), 1];
+                l_sos = [length(arm.tr.template(:,1)), 1];
             else
                 lembo = {'sup', 'inf'};
-                l_sos = [1, length(arm.pl.tipo(:,1))];
+                l_sos = [1, length(arm.tr.template(:,1))];
             end
             
             %     for i_lem = 1:length(lembo)
@@ -344,9 +357,16 @@ for i_pl = 1:length(L.pl)
             while continua_ciclo.sup == true || continua_ciclo.inf == true
                 i_lem = 1 + rem(j,2);
                 
+                % aggiornamento dell'armatura tipo
+                if j == 0
+                    arm.tr.template(l_sos(~strcmp(lembo{i_lem},lembo)),2:3) = [0, 0];    % per la prima iterazione, l'armatura è semplice
+                else
+                    arm.tr.template(l_sos(~strcmp(lembo{i_lem},lembo)),2:3) = [ris_.nb1, ris_.fi1];    % aggiorno con i valori dell'iterazione precedente
+                end
+                
                 % calcolo momento resistente e peso
-                ris_ = dimenSezione(geom.tr.sezione, arm.tr.tipo, arm.tr.(lembo{i_lem}).fiv, arm.tr.(lembo{i_lem}).nb1, arm.tr.(lembo{i_lem}).nb2, fck, M.tr(i_pl, i_tr).(lembo{i_lem}), soll.tr(i_pl).N, 'tipo', '''elastica''', 'lock', arm.tr.(lembo{i_lem}).lock, 'precisione', '6');
-                [ris_, armatura_] = calcPesoCamp(ris_, sign(M.tr(i_pl, i_tr).(lembo{i_lem})), L.tr(i_tr), M.tr(i_pl, i_tr).mx, 'piegate', true);
+                ris_ = dimenSezione(geom.tr.sezione, arm.tr.template, arm.tr.(lembo{i_lem}).fiv, arm.tr.(lembo{i_lem}).nb1, arm.tr.(lembo{i_lem}).nb2, fck, M.tr(i_pl, i_tr).(lembo{i_lem}), soll.tr(i_pl).N, 'tipo', '''elastica''', 'lock', arm.tr.(lembo{i_lem}).lock, 'precisione', '6');
+                ris_ = calcPesoCamp(ris_, sign(M.tr(i_pl, i_tr).(lembo{i_lem})), L.tr(i_tr), M.tr(i_pl, i_tr).mx, 'piegate', true);
                 
                 % questo ciclo while riduce le possibili soluzioni a quella con peso
                 % minore
@@ -371,8 +391,17 @@ for i_pl = 1:length(L.pl)
                             ris_.fi1 == ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr).fi1 && ...
                             ris_.fi2 == ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr).fi2
                         continua_ciclo.(lembo{i_lem}) = false;
+                    elseif j >= 4 && ... % garantisce check delle condizioni a partire dalle 5a iterazione
+                            ris_.nb1 == ris2_.(['arm_' lembo{i_lem}]).nb1 && ...
+                            ris_.nb2 == ris2_.(['arm_' lembo{i_lem}]).nb2 && ...
+                            ris_.fi1 == ris2_.(['arm_' lembo{i_lem}]).fi1 && ...
+                            ris_.fi2 == ris2_.(['arm_' lembo{i_lem}]).fi2
+                        continua_ciclo.(lembo{i_lem}) = false;
+                    else
+                        continua_ciclo.(lembo{i_lem}) = true;
                     end
-                        ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr) = ris_; % salvo la soluzione temporanea nel struttura globale
+                    ris2_.(['arm_' lembo{i_lem}]) = ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr); % valore dell'iterazione i-2
+                    ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr) = ris_; % salvo la soluzione temporanea nel struttura globale
                 else
                     armaturaValida.tr(i_pl, i_tr) = false; % flag che segnala se la combinazione di armatura per la luce in oggetto è valida oppure no
                     break
@@ -382,10 +411,10 @@ for i_pl = 1:length(L.pl)
             
             % calcolo dell'armatura a taglio
             if armaturaValida.tr(i_pl, i_tr)
-                [armSt_, pesoSt_]  = calcPesoStaffe(geom.tr.sezione, L.tr(i_tr)*1e3, arm.tr.tipo(:,1), arm.tr.staffe.nb_sw, arm.tr.staffe.fi_sw, ris_.fi1, arm.tr.staffe.s_lim, fck, soll.tr(i_pl).N, V.tr(i_pl, i_tr).vx, 'copriferro', arm.tr.staffe.cf);
+                [armSt_, pesoSt_]  = calcPesoStaffe(geom.tr.sezione, L.tr(i_tr)*1e3, arm.tr.template(:,1), arm.tr.staffe.nb_sw, arm.tr.staffe.fi_sw, ris_.fi1, arm.tr.staffe.s_lim, fck, soll.tr(i_pl).N, V.tr(i_pl, i_tr).vx, 'copriferro', arm.tr.staffe.cf);
                 if ~isempty(armSt_)
                     ris.tr.staffe(i_pl, i_tr).arm = armSt_;
-                    ris.tr.peso.staffe(i_pl, i_tr) = pesoSt_;
+                    ris.tr.peso.staffe_tr(i_pl, i_tr) = pesoSt_;    % peso delle staffe per concio di trave
                 else
                     armaturaValida.tr(i_pl, i_tr) = false; % flag che segnala se la combinazione di armatura per la luce in oggetto è valida oppure no
                 end
@@ -407,8 +436,8 @@ for i_pl = 1:length(L.pl)
         end
     end
 end
-close(hw)
-clear('hw')
+close(wb)
+clear('h')
 
 %% Combinazione dei risultati
 for i_pl = 1:length(L.pl)
@@ -437,56 +466,82 @@ for i_pl = 1:length(L.pl)
     if sum(ris.tot.s_logico(i_pl, :))   % almeno un componenente è pari ad 1, pertanto vale la pena eseguire il calcolo
         clear('l_.pl')
         % calcolo del peso delle barre della platea
-        ris.pl.peso.base(i_pl) = 0;
-        ris.pl.peso.add(i_pl) = 0;
         l_.pl = struct;
-        
-        % combina l'armatura superiore e quella inferiore in un unico 
-        ris.pl.arm_comb 
-        for i_lem = 1:length(lembo)
-            % i seguenti parametri sono necessari per il calcolo
-            % dell'armatura continua su tutta la lunghezza di L.X
-            l_.pl.anc.(lembo{i_lem}) = 60 * ris.pl.(['arm_' lembo{i_lem}])(i_pl).fi1 * 1e-3;   % [m]lunghezza di ancoragggio per il diametro fi1 nell'ipotesi scarsa aderenza
-            l_.pl.tra.(lembo{i_lem})= 0.9 * ((2-i_lem)*geom.pl.h + (2*(i_lem==2) - 1) * arm.pl.(lembo{i_lem}).d) * 1e-3; % [m] lunghezza di traslazione del momento
-            l_.pl.beff.(lembo{i_lem}) = L.b_max - l_.pl.anc.(lembo{i_lem}) - l_.pl.tra.(lembo{i_lem});   % [m] lunghezza effettiva delle barre
-            l_.pl.Xeff.(lembo{i_lem}) = L.X/l_.pl.beff.(lembo{i_lem}) * L.b_max;   % [m] lunghezza totale delle barre > di L.X perché considera anche le sovrapposizioni
-            % calcola il peso delle barre fi1 i.e. l'armatura di base
-            % continua. Il campo "peso_fi1" è esrpresso in [kg] pertanto è
-            % necessario dividerlo per la lunghezza della campata per
-            % ottenere l'incidenza al metro lineare che moltiplica la
-            % lunghezza efficace l_.pl.Xeff.(...).
-            ris.pl.peso.base(i_pl) = ris.pl.peso.base(i_pl) + l_.pl.Xeff.(lembo{i_lem}) * ris.pl.(['arm_' lembo{i_lem}])(i_pl).peso_fi1/ris.pl.(['arm_' lembo{i_lem}])(i_pl).L_fi1 * L.Y/(geom.pl.b*1e-3);   % il peso è moltiplicato per L.Y/geom.pl.b per ottenere il totale esteso a tutta la superficie della platea
-            % calcola il peso delle barre addizionali, non continue,
-            % pertanto il peso è pari al peso_fi2
-            ris.pl.peso.add(i_pl) = ris.pl.peso.add(i_pl) + ris.pl.(['arm_' lembo{i_lem}])(i_pl).peso_fi2 * (num.tr(i_pl)-1) * L.Y/(geom.pl.b * 1e-3);
-            % Peso totale della platea in funzione di L.pl
-            ris.pl.peso.tot(i_pl) = ris.pl.peso.base(i_pl) + ris.pl.peso.add(i_pl);
+        % Combina l'armatura superiore e quella inferiore in una struttura
+        % unica. Usa l'armatura inferiore come template e sostituisce la
+        % prima riga con il valori corrispondente dell'armatura superiore e
+        % aggiorna la variabile di peso.
+        ris.pl.comb_arm(i_pl) = ris.pl.arm_inf(i_pl).armatura;
+        fieldname_ = fields( ris.pl.arm_sup(i_pl).armatura );
+        for i = 1:length( fieldname_)-1 % escludo il campo 'Peso' che è l'ultimo
+            ris.pl.comb_arm(i_pl).(fieldname_{i})(1) = ris.pl.arm_sup(i_pl).armatura.(fieldname_{i})(1);
         end
+        ris.pl.comb_arm(i_pl).Peso = sum( ris.pl.comb_arm(i_pl).peso_tot ); % aggiorno il campo 'Peso'
+        
+        % determino qual è il massimo diametro per l'armatura continua
+        % (nb1, fi1) e calcolo la lunghezza di ancoraggio.
+        l_.pl.anc = 60 * ris.pl.comb_arm(i_pl).fi1*1e-3;    % [m] vettore delle lunghezze di ancoraggio in scarsa aderenza per barre continue
+        l_.pl.tra = 0.9 * max(ris.pl.comb_arm(i_pl).d)/2*1e-3;   % [m] valore della lunghezza di traslazione dei momenti (uguale per tuttle barre)
+        l_.pl.beff = L.b_max - l_.pl.anc - l_.pl.tra;   % [m] lunghezza effettiva delle barre
+        l_.pl.k_fi1 = L.b_max ./ l_.pl.beff;   % fattore amplificativo che tiene conto delle sovrapposizione delle barre
+        
+        % calcola il peso delle barre fi1 i.e. l'armatura di base continua.
+        % Il campo "peso_fi1" è moltiplicato per il coefficiente k_fi1 e
+        % per il numero di campate della platea, pari al numero di travi -
+        % 1. Questa quantità deve quindi essere moltiplicata per la
+        % dimensione L.Y/b, dove b è la larghezza della sezione di calcolo,
+        % i.e. n = 1 m;
+        ris.pl.peso.base(i_pl) = sum(l_.pl.k_fi1 .* ris.pl.comb_arm(i_pl).peso_fi1) * ( num.tr(i_pl)-1 ) * L.Y/(geom.pl.b*1e-3);
+        
+        % calcola il peso delle barre addizionali, non continue,
+        % pertanto il peso è pari al peso_fi2.
+        ris.pl.peso.add(i_pl) = sum(ris.pl.comb_arm(i_pl).peso_fi2) * (num.tr(i_pl)-1) * L.Y/(geom.pl.b * 1e-3);
+        
+        % Peso totale della platea in funzione di L.pl
+        ris.pl.peso.tot(i_pl) = ris.pl.peso.base(i_pl) + ris.pl.peso.add(i_pl);
         
         % calcolo del peso delle barre delle travi
         l_.tr = struct;
         for i_tr = 1:length(L.tr)
             if ris.tot.s_logico(i_pl, i_tr)
-                ris.tr.peso.base(i_pl, i_tr) = 0;
-                ris.tr.peso.add(i_pl, i_tr) = 0;
-                for i_lem = 1:length(lembo)
-                    % i seguenti parametri sono necessari per il calcolo
-                    % dell'armatura continua su tutta la lunghezza di L.Y
-                    l_.tr.anc.(lembo{i_lem}) = 60*ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr).fi1 *1e-3;   % [m]lunghezza di ancoragggio per il diametro fi1 nell'ipotesi scarsa aderenza
-                    l_.tr.tra.(lembo{i_lem})= 0.9*((2-i_lem)*geom.tr.h + (2*(i_lem==2) - 1) * arm.tr.(lembo{i_lem}).d) * 1e-3; % [m] lunghezza di traslazione del momento
-                    l_.tr.beff.(lembo{i_lem}) = L.b_max - l_.tr.anc.(lembo{i_lem}) - l_.tr.tra.(lembo{i_lem});   % [m] lunghezza effettiva delle barre
-                    l_.tr.Yeff.(lembo{i_lem}) = L.Y/l_.tr.beff.(lembo{i_lem}) * L.b_max;   % [m] lunghezza totale delle barre > di L.X perché considera anche le sovrapposizioni
-                    % calcola il peso delle barre fi1 i.e. l'armatura di base
-                    % continua. Il campo "peso_fi1" è esrpresso in [kg] pertanto è
-                    % necessario dividerlo per la lunghezza della campata per
-                    % ottenere l'incidenza al metro lineare che moltiplica la
-                    % lunghezza efficace l_.pl.Xeff.(...).
-                    ris.tr.peso.base(i_pl, i_tr) = ris.tr.peso.base(i_pl, i_tr) + l_.tr.Yeff.(lembo{i_lem}) * ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr).peso_fi1 / ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr).L_fi1 * num.tr(i_pl) ;   % il peso è moltiplicato per L.Y/geom.pl.b per ottenere il totale esteso a tutta la superficie della platea
-                    % calcola il peso delle barre addizionali, non continue,
-                    % pertanto il peso è pari al peso_fi2
-                    ris.tr.peso.add(i_pl, i_tr) = ris.tr.peso.add(i_pl, i_tr) + ris.tr.(['arm_' lembo{i_lem}])(i_pl, i_tr).peso_fi2 * (num.pali_tr(i_tr)-1);
+                clear('l_.tr')
+                % calcolo del peso delle barre della trave
+                l_.tr = struct;
+                
+                % Combina l'armatura superiore e quella inferiore in una struttura
+                % unica. Usa l'armatura inferiore come template e sostituisce la
+                % prima riga con il valori corrispondente dell'armatura superiore e
+                % aggiorna la variabile di peso.
+                ris.tr.comb_arm(i_pl, i_tr) = ris.tr.arm_inf(i_pl, i_tr).armatura;
+                fieldname_ = fields( ris.tr.arm_sup(i_pl, i_tr).armatura );
+                for i = 1:length( fieldname_)-1 % escludo il campo 'Peso' che è l'ultimo
+                    ris.tr.comb_arm(i_pl, i_tr).(fieldname_{i})(1) = ris.tr.arm_sup(i_pl, i_tr).armatura.(fieldname_{i})(1);
                 end
-                % Peso totale delle travi in funzione di L.tr
+                ris.tr.comb_arm(i_pl, i_tr).Peso = sum( ris.tr.comb_arm(i_pl, i_tr).peso_tot ); % aggiorno il campo 'Peso'
+                
+                % determino qual è il massimo diametro per l'armatura continua
+                % (nb1, fi1) e calcolo la lunghezza di ancoraggio.
+                l_.tr.anc = 60 * ris.tr.comb_arm(i_pl, i_tr).fi1*1e-3;    % [m] vettore delle lunghezze di ancoraggio in scarsa aderenza per barre continue
+                l_.tr.tra = 0.9 * max(ris.tr.comb_arm(i_pl, i_tr).d)/2*1e-3;   % [m] valore della lunghezza di traslazione dei momenti (uguale per tuttle barre)
+                l_.tr.beff = L.b_max - l_.tr.anc - l_.tr.tra;   % [m] lunghezza effettiva delle barre
+                l_.tr.k_fi1 = L.b_max ./ l_.tr.beff;   % fattore amplificativo che tiene conto delle sovrapposizione delle barre
+                
+                % calcola il peso delle barre fi1 i.e. l'armatura di base continua.
+                % Il campo "peso_fi1" è moltiplicato per il coefficiente k_fi1 e
+                % per il numero di campate della platea, pari al numero di travi -
+                % 1. Questa quantità deve quindi essere moltiplicata per la
+                % dimensione L.Y/b, dove b è la larghezza della sezione di calcolo,
+                % i.e. n = 1 m;
+                ris.tr.peso.base(i_pl, i_tr) = sum(l_.tr.k_fi1 .* ris.tr.comb_arm(i_pl, i_tr).peso_fi1) * ( num.pali_tr(i_tr)-1 ) * num.tr(i_pl);
+                
+                % calcola il peso delle barre addizionali, non continue,
+                % pertanto il peso è pari al peso_fi2.
+                ris.tr.peso.add(i_pl, i_tr) = sum(ris.tr.comb_arm(i_pl, i_tr).peso_fi2) * (num.pali_tr(i_tr)-1) * num.tr(i_pl);
+                
+                % calcolo del peso delle staffe
+                ris.tr.peso.staffe(i_pl, i_tr) = ris.tr.peso.staffe_tr(i_pl, i_tr) * num.tr(i_pl) * (num.pali_tr(i_tr) - 1);   
+                
+                % Peso totale della trave in funzione di L.tr
                 ris.tr.peso.tot(i_pl, i_tr) = ris.tr.peso.base(i_pl, i_tr) + ris.tr.peso.add(i_pl, i_tr) + ris.tr.peso.staffe(i_pl, i_tr);
             end
         end
@@ -534,40 +589,45 @@ xlabel('L_{platea}')
 ylabel('Costo Platea')
 
 subplot(3,2,3)
-[C.tr, hw.tr] = contourf(L.pl, L.tr, ris.costo.tr');
-clabel(C.tr, hw.tr)
+[C.tr, h.tr] = contourf(L.pl, L.tr, ris.costo.tr');
+clabel(C.tr, h.tr)
 title('Costo Travi')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 zlabel('Costo Travi')
 
 subplot(3,2,5)
-[C.pali, hw.pali] = contourf(L.pl, L.tr, ris.costo.pali');
-clabel(C.pali, hw.pali);
+[C.pali, h.pali] = contourf(L.pl, L.tr, ris.costo.pali');
+clabel(C.pali, h.pali);
 title('Costo Pali')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 zlabel('Costo pali')
 
 subplot(3,2,[2, 4, 6])
-[C.tot, hw.tot] = contourf(L.pl, L.tr, ris.costo.tot'./costo_min, 1:.05:2);
-clabel(C.tot, hw.tot);
+[C.tot, h.tot] = contourf(L.pl, L.tr, ris.costo.tot');
+clabel(C.tot, h.tot);
 title('Costo Totale [%]')
 xlabel('L_{platea}')
 ylabel('L_{trave}')
 zlabel('Somma Costi')
+
 %%
 clc
-fprintf('\nLa soluzione ottimale si ha in corripondenza degli indici:\n')
-fprintf('\t\ti_min\t\tL[m]\n')
+out = fopen('results.txt','w+');
+fprintf(out, 'La soluzione ottimale si ha in corripondenza degli indici:\n');
+fprintf(out, '\t% 4s\t% 8s\t% 8s\n', '', 'min', 'L[m]');
 label = {'pl', 'tr'};
 for i = 1:length(label)
-    fprintf('%s\t% 8.0f\t% 8.2f \n', label{i}, i_min.(label{i}), L.(label{i})(i_min.(label{i})))
+    fprintf(out, '\ti_%2s\t% 8.0f\t% 8.2f \n', label{i}, i_min.(label{i}), L.(label{i})(i_min.(label{i})));
 end
-fprintf('\nChe corrispondono a %d travi e %d pali per trave, per un totale di %d pali.\n', num.tr(i_min.pl), num.pali_tr(i_min.tr), num.pali(i_min.pl, i_min.tr));
-fprintf('\nLe deformazioni minime per questa combinazione sono pari a:\n');
-fprintf('% -4s\t% 12s\t% 12s\t% s<%.2e\n', '', 's_min[mm]', 's_rel[%]', 's_rel', f_lim );
-fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'pl', ris.pl.s_min(i_min.pl), ris.pl.s_rel(i_min.pl), ris.pl.s_logico(i_min.pl));
-fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tr', ris.tr.s_min(i_min.pl, i_min.tr), ris.tr.s_rel(i_min.pl, i_min.tr), ris.tr.s_logico(i_min.pl, i_min.tr));
-fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tot1', ris.tot.s_min(i_min.pl, i_min.tr), ris.tot.s_rel(i_min.pl, i_min.tr), ris.tot.s_logico(i_min.pl, i_min.tr));
-fprintf('% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tot2', ris.tot.s_min(i_min.pl, i_min.tr), ris.tot.s_rel2(i_min.pl, i_min.tr), ris.tot.s_rel2(i_min.pl, i_min.tr)<= f_lim);
+fprintf(out, '\nChe corrispondono a %d travi e %d pali per trave, per un totale di %d pali.\n', num.tr(i_min.pl), num.pali_tr(i_min.tr), num.pali(i_min.pl, i_min.tr));
+fprintf(out, '\nLe deformazioni minime per questa combinazione sono pari a:\n');
+fprintf(out, '\t% -4s\t% 12s\t% 12s\t% s<%.2e\n', '', 's_min[mm]', 's_rel[%]', 's_rel', f_lim );
+fprintf(out, '\t% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'pl', ris.pl.s_min(i_min.pl), ris.pl.s_rel(i_min.pl), ris.pl.s_logico(i_min.pl));
+fprintf(out, '\t% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tr', ris.tr.s_min(i_min.pl, i_min.tr), ris.tr.s_rel(i_min.pl, i_min.tr), ris.tr.s_logico(i_min.pl, i_min.tr));
+fprintf(out, '\t% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tot1', ris.tot.s_min(i_min.pl, i_min.tr), ris.tot.s_rel(i_min.pl, i_min.tr), ris.tot.s_logico(i_min.pl, i_min.tr));
+fprintf(out, '\t% -4s\t% 12.4f\t% 12.4e\t% 12d\n', 'tot2', ris.tot.s_min(i_min.pl, i_min.tr), ris.tot.s_rel2(i_min.pl, i_min.tr), ris.tot.s_rel2(i_min.pl, i_min.tr)<= f_lim);
+fprintf(out, '\nIl costo totale stimato è pari a %.2f €', ris.costo.tot(i_min.pl, i_min.tr));
+fclose(out);
+type('results.txt')
