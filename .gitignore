@@ -48,3 +48,7 @@ Temporary Items
 
 #matlab temporary file
 *.asv
+
+# Folder
+compattabili*
+Scenari*

@@ -1,15 +1,1624 @@
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
 La soluzione ottimale si ha in corripondenza degli indici:
 	    	     min	    L[m]
-	i_pl	      10	    3.11 
-	i_tr	       2	    5.64 
+	i_pl	       5	    3.73 
+	i_tr	       6	    4.39 
 
-Che corrispondono a 19 travi e 15 pali per trave, per un totale di 285 pali.
+Che corrispondono a 16 travi e 19 pali per trave, per un totale di 304 pali.
 
 Le deformazioni minime per questa combinazione sono pari a:
 	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
-	pl  	     -0.3291	  1.0578e-04	           1
-	tr  	     -1.8833	  3.3374e-04	           1
-	tot1	     -2.2123	  3.4334e-04	           1
-	tot2	     -2.2123	  4.3952e-04	           0
+	pl  	     -1.1339	  3.0374e-04	           1
+	tr  	     -0.7395	  1.6849e-04	           1
+	tot1	     -1.8734	  3.2514e-04	           1
+	tot2	     -1.8734	  4.7223e-04	           0
 
-Il costo totale stimato è pari a 283930.98 €
+Il costo totale stimato è pari a 285830.84 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       5	    3.73 
+	i_tr	       6	    4.39 
+
+Che corrispondono a 16 travi e 19 pali per trave, per un totale di 304 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.1398	  3.0530e-04	           1
+	tr  	     -0.7289	  1.6608e-04	           1
+	tot1	     -1.8687	  3.2432e-04	           1
+	tot2	     -1.8687	  4.7138e-04	           0
+
+Il costo totale stimato è pari a 289817.76 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       9	    2.95 
+	i_tr	       2	    5.64 
+
+Che corrispondono a 20 travi e 15 pali per trave, per un totale di 300 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.2224	  7.5445e-05	           1
+	tr  	     -1.7940	  3.1793e-04	           1
+	tot1	     -2.0164	  3.1674e-04	           1
+	tot2	     -2.0164	  3.9338e-04	           0
+
+Il costo totale stimato è pari a 286777.86 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       9	    2.95 
+	i_tr	       2	    5.64 
+
+Che corrispondono a 20 travi e 15 pali per trave, per un totale di 300 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.2224	  7.5445e-05	           1
+	tr  	     -1.7940	  3.1793e-04	           1
+	tot1	     -2.0164	  3.1674e-04	           1
+	tot2	     -2.0164	  3.9338e-04	           0
+
+Il costo totale stimato è pari a 286777.86 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       9	    2.95 
+	i_tr	       2	    5.64 
+
+Che corrispondono a 20 travi e 15 pali per trave, per un totale di 300 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.2224	  7.5445e-05	           1
+	tr  	     -1.7940	  3.1793e-04	           1
+	tot1	     -2.0164	  3.1674e-04	           1
+	tot2	     -2.0164	  3.9338e-04	           0
+
+Il costo totale stimato è pari a 286777.86 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       9	    2.95 
+	i_tr	       2	    5.64 
+
+Che corrispondono a 20 travi e 15 pali per trave, per un totale di 300 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.2224	  7.5445e-05	           1
+	tr  	     -1.7940	  3.1793e-04	           1
+	tot1	     -2.0164	  3.1674e-04	           1
+	tot2	     -2.0164	  3.9338e-04	           0
+
+Il costo totale stimato è pari a 286777.86 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       6	    3.50 
+	i_tr	       5	    4.65 
+
+Che corrispondono a 17 travi e 18 pali per trave, per un totale di 306 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.06e-04
+	pl  	     -0.7449	  2.1284e-04	           1
+	tr  	     -0.8929	  1.9213e-04	           1
+	tot1	     -1.6378	  2.8152e-04	           1
+	tot2	     -1.6378	  4.0497e-04	           0
+
+Il costo totale stimato è pari a 288372.19 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       6	    3.50 
+	i_tr	       5	    4.65 
+
+Che corrispondono a 17 travi e 18 pali per trave, per un totale di 306 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.06e-04
+	pl  	     -0.7449	  2.1284e-04	           1
+	tr  	     -0.8929	  1.9213e-04	           1
+	tot1	     -1.6378	  2.8152e-04	           1
+	tot2	     -1.6378	  4.0497e-04	           0
+
+Il costo totale stimato è pari a 288372.19 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       6	    3.50 
+	i_tr	       5	    4.65 
+
+Che corrispondono a 17 travi e 18 pali per trave, per un totale di 306 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.06e-04
+	pl  	     -0.7449	  2.1284e-04	           1
+	tr  	     -0.8929	  1.9213e-04	           1
+	tot1	     -1.6378	  2.8152e-04	           1
+	tot2	     -1.6378	  4.0497e-04	           0
+
+Il costo totale stimato è pari a 288372.19 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       6	    3.50 
+	i_tr	       5	    4.65 
+
+Che corrispondono a 17 travi e 18 pali per trave, per un totale di 306 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.06e-04
+	pl  	     -0.7449	  2.1284e-04	           1
+	tr  	     -0.8929	  1.9213e-04	           1
+	tot1	     -1.6378	  2.8152e-04	           1
+	tot2	     -1.6378	  4.0497e-04	           0
+
+Il costo totale stimato è pari a 288372.19 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       5	    3.73 
+	i_tr	       6	    4.39 
+
+Che corrispondono a 16 travi e 19 pali per trave, per un totale di 304 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.1339	  3.0374e-04	           1
+	tr  	     -0.7395	  1.6849e-04	           1
+	tot1	     -1.8734	  3.2514e-04	           1
+	tot2	     -1.8734	  4.7223e-04	           0
+
+Il costo totale stimato è pari a 285830.84 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       5	    3.73 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 16 travi e 16 pali per trave, per un totale di 256 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.6572	  1.7605e-04	           1
+	tr  	     -1.3168	  2.5003e-04	           1
+	tot1	     -1.9740	  3.0579e-04	           1
+	tot2	     -1.9740	  4.2607e-04	           0
+
+Il costo totale stimato è pari a 251530.42 €
+
+############################################################
+
+Fattore di amplificazione del momento inferiore:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       5	    3.73 
+	i_tr	       2	    5.64 
+
+Che corrispondono a 16 travi e 15 pali per trave, per un totale di 240 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.6669	  1.7863e-04	           1
+	tr  	     -1.8057	  3.2000e-04	           1
+	tot1	     -2.4726	  3.6544e-04	           1
+	tot2	     -2.4726	  4.9863e-04	           0
+
+Il costo totale stimato è pari a 250335.69 €
+
+########################################################################################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       4	    4.00 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 15 travi e 16 pali per trave, per un totale di 240 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.0090	  2.5225e-04	           1
+	tr  	     -1.3104	  2.4881e-04	           1
+	tot1	     -2.3194	  3.5071e-04	           1
+	tot2	     -2.3194	  5.0106e-04	           0
+
+Il costo totale stimato è pari a 264113.30 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       4	    4.00 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 15 travi e 16 pali per trave, per un totale di 240 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.0060	  2.5151e-04	           1
+	tr  	     -1.3104	  2.4881e-04	           1
+	tot1	     -2.3164	  3.5026e-04	           1
+	tot2	     -2.3164	  5.0032e-04	           0
+
+Il costo totale stimato è pari a 411871.21 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       4	    4.00 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 15 travi e 16 pali per trave, per un totale di 240 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.0060	  2.5151e-04	           1
+	tr  	     -1.3104	  2.4881e-04	           1
+	tot1	     -2.3164	  3.5026e-04	           1
+	tot2	     -2.3164	  5.0032e-04	           0
+
+Il costo totale stimato è pari a 411871.21 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       4	    4.00 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 15 travi e 16 pali per trave, per un totale di 240 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.0090	  2.5225e-04	           1
+	tr  	     -1.3104	  2.4881e-04	           1
+	tot1	     -2.3194	  3.5071e-04	           1
+	tot2	     -2.3194	  5.0106e-04	           0
+
+Il costo totale stimato è pari a 406191.01 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       6	    3.50 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 17 travi e 16 pali per trave, per un totale di 272 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.1299	  3.2282e-04	           1
+	tr  	     -1.1021	  2.0926e-04	           1
+	tot1	     -2.2320	  3.5296e-04	           1
+	tot2	     -2.2320	  5.3208e-04	           0
+
+Il costo totale stimato è pari a 410574.44 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       5	    3.73 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 16 travi e 16 pali per trave, per un totale di 256 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.9337	  2.5010e-04	           1
+	tr  	     -1.1986	  2.2757e-04	           1
+	tot1	     -2.1323	  3.3029e-04	           1
+	tot2	     -2.1323	  4.7767e-04	           0
+
+Il costo totale stimato è pari a 408827.93 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       4	    4.00 
+	i_tr	       3	    5.27 
+
+Che corrispondono a 15 travi e 16 pali per trave, per un totale di 240 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.0090	  2.5225e-04	           1
+	tr  	     -1.3104	  2.4881e-04	           1
+	tot1	     -2.3194	  3.5071e-04	           1
+	tot2	     -2.3194	  5.0106e-04	           0
+
+Il costo totale stimato è pari a 406191.01 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    4.20 
+	i_tr	       5	    4.65 
+
+Che corrispondono a 5 travi e 18 pali per trave, per un totale di 90 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -1.3953	  3.3222e-04	           1
+	tr  	     -0.7770	  1.6720e-04	           1
+	tot1	     -2.1723	  3.4680e-04	           1
+	tot2	     -2.1723	  4.9941e-04	           0
+
+Il costo totale stimato è pari a 134431.09 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       2	    5.64 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4408	  1.2501e-04	           1
+	tr  	     -1.5252	  2.7028e-04	           1
+	tot1	     -1.9659	  2.9546e-04	           1
+	tot2	     -1.9659	  3.9530e-04	           0
+
+Il costo totale stimato è pari a 415713.86 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5044	  2.6513e-04	           1
+	tot1	     -1.9480	  2.9153e-04	           1
+	tot2	     -1.9480	  3.9083e-04	           0
+
+Il costo totale stimato è pari a 422061.72 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5044	  2.6513e-04	           1
+	tot1	     -1.9480	  2.9153e-04	           1
+	tot2	     -1.9480	  3.9083e-04	           0
+
+Il costo totale stimato è pari a 422061.72 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5044	  2.6513e-04	           1
+	tot1	     -1.9480	  2.9153e-04	           1
+	tot2	     -1.9480	  3.9083e-04	           0
+
+Il costo totale stimato è pari a 422061.72 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5848	  2.7929e-04	           1
+	tot1	     -2.0283	  3.0355e-04	           1
+	tot2	     -2.0283	  4.0498e-04	           0
+
+Il costo totale stimato è pari a 418875.71 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5044	  2.6513e-04	           1
+	tot1	     -1.9480	  2.9153e-04	           1
+	tot2	     -1.9480	  3.9083e-04	           0
+
+Il costo totale stimato è pari a 422061.72 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5848	  2.7929e-04	           1
+	tot1	     -2.0283	  3.0355e-04	           1
+	tot2	     -2.0283	  4.0498e-04	           0
+
+Il costo totale stimato è pari a 418875.71 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5044	  2.6513e-04	           1
+	tot1	     -1.9480	  2.9153e-04	           1
+	tot2	     -1.9480	  3.9083e-04	           0
+
+Il costo totale stimato è pari a 422061.72 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       3	    3.53 
+	i_tr	       6	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.5848	  2.7929e-04	           1
+	tot1	     -2.0283	  3.0355e-04	           1
+	tot2	     -2.0283	  4.0498e-04	           0
+
+Il costo totale stimato è pari a 418875.71 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.7494	  3.0830e-04	           1
+	tot1	     -2.1929	  3.2818e-04	           1
+	tot2	     -2.1929	  4.3399e-04	           0
+
+Il costo totale stimato è pari a 407527.07 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4435	  1.2569e-04	           1
+	tr  	     -1.7494	  3.0830e-04	           1
+	tot1	     -2.1929	  3.2818e-04	           1
+	tot2	     -2.1929	  4.3399e-04	           0
+
+Il costo totale stimato è pari a 407527.07 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4974	  1.4097e-04	           1
+	tr  	     -1.8907	  3.3321e-04	           1
+	tot1	     -2.3882	  3.5740e-04	           1
+	tot2	     -2.3882	  4.7418e-04	           0
+
+Il costo totale stimato è pari a 407527.07 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4974	  1.4097e-04	           1
+	tr  	     -2.0769	  3.6602e-04	           1
+	tot1	     -2.5743	  3.8526e-04	           0
+	tot2	     -2.5743	  5.0699e-04	           0
+
+Il costo totale stimato è pari a NaN €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.15
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.4974	  1.4097e-04	           1
+	tr  	     -1.9222	  3.3875e-04	           1
+	tot1	     -2.4196	  3.6211e-04	           1
+	tot2	     -2.4196	  4.7972e-04	           0
+
+Il costo totale stimato è pari a 402830.78 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.15
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5250	  1.4877e-04	           1
+	tr  	     -1.9222	  3.3875e-04	           1
+	tot1	     -2.4471	  3.6623e-04	           1
+	tot2	     -2.4471	  4.8752e-04	           0
+
+Il costo totale stimato è pari a 388677.58 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -2.1876	  3.8552e-04	           0
+	tot1	     -2.7387	  4.0986e-04	           0
+	tot2	     -2.7387	  5.4171e-04	           0
+
+Il costo totale stimato è pari a NaN €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.15
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -2.0433	  3.6010e-04	           1
+	tot1	     -2.5945	  3.8827e-04	           0
+	tot2	     -2.5945	  5.1629e-04	           0
+
+Il costo totale stimato è pari a NaN €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.40
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.15
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -2.0433	  3.6010e-04	           1
+	tot1	     -2.5945	  3.8827e-04	           0
+	tot2	     -2.5945	  5.1629e-04	           0
+
+Il costo totale stimato è pari a NaN €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.40
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 405162.53 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.30
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5847	  1.6570e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3944	  3.5834e-04	           1
+	tot2	     -2.3944	  4.8463e-04	           0
+
+Il costo totale stimato è pari a 403665.83 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.00
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       2	    5.30 
+
+Che corrispondono a 17 travi e 16 pali per trave, per un totale di 272 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.5914	  3.0049e-04	           1
+	tot1	     -2.1425	  3.3667e-04	           1
+	tot2	     -2.1425	  4.5668e-04	           0
+
+Il costo totale stimato è pari a 405052.36 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 402685.68 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 402685.68 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 402685.68 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 402685.68 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 402685.68 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 402685.68 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.6185	  1.7529e-04	           1
+	tr  	     -1.9920	  3.5106e-04	           1
+	tot1	     -2.6105	  3.9068e-04	           0
+	tot2	     -2.6105	  5.2634e-04	           0
+
+Il costo totale stimato è pari a NaN €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.60
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.6185	  1.7529e-04	           1
+	tr  	     -1.8589	  3.2760e-04	           1
+	tot1	     -2.4774	  3.7076e-04	           0
+	tot2	     -2.4774	  5.0289e-04	           0
+
+Il costo totale stimato è pari a NaN €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.8097	  3.1894e-04	           1
+	tot1	     -2.3609	  3.5332e-04	           1
+	tot2	     -2.3609	  4.7512e-04	           0
+
+Il costo totale stimato è pari a 402685.68 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5847	  1.6570e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.3246	  3.4789e-04	           1
+	tot2	     -2.3246	  4.7233e-04	           0
+
+Il costo totale stimato è pari a 405434.66 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.10
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5847	  1.6570e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.3246	  3.4789e-04	           1
+	tot2	     -2.3246	  4.7233e-04	           0
+
+Il costo totale stimato è pari a 405434.66 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.15
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5847	  1.6570e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.3246	  3.4789e-04	           1
+	tot2	     -2.3246	  4.7233e-04	           0
+
+Il costo totale stimato è pari a 405434.66 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.40
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.2911	  3.4287e-04	           1
+	tot2	     -2.2911	  4.6282e-04	           0
+
+Il costo totale stimato è pari a 407135.69 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.40
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5745	  1.6280e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.3144	  3.4637e-04	           1
+	tot2	     -2.3144	  4.6944e-04	           0
+
+Il costo totale stimato è pari a 403922.63 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.40
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5494	  1.5570e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.2893	  3.4261e-04	           1
+	tot2	     -2.2893	  4.6233e-04	           0
+
+Il costo totale stimato è pari a 412905.78 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5726	  1.6227e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.3125	  3.4608e-04	           1
+	tot2	     -2.3125	  4.6891e-04	           0
+
+Il costo totale stimato è pari a 408793.63 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.00
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5827	  1.6514e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.3227	  3.4760e-04	           1
+	tot2	     -2.3227	  4.7178e-04	           0
+
+Il costo totale stimato è pari a 410516.48 €
+
+############################################################
+
+Fattore di amplificazione del momento per la platea:
+	Minf x 1.40
+	Msup x 1.00
+
+
+Fattore di amplificazione del momento per la trave:
+	Minf x 1.40
+	Msup x 1.00
+
+
+La soluzione ottimale si ha in corripondenza degli indici:
+	    	     min	    L[m]
+	i_pl	       1	    3.53 
+	i_tr	       1	    5.67 
+
+Che corrispondono a 17 travi e 15 pali per trave, per un totale di 255 pali.
+
+Le deformazioni minime per questa combinazione sono pari a:
+	    	   s_min[mm]	    s_rel[%]	s_rel<3.67e-04
+	pl  	     -0.5511	  1.5618e-04	           1
+	tr  	     -1.7399	  3.0663e-04	           1
+	tot1	     -2.2911	  3.4287e-04	           1
+	tot2	     -2.2911	  4.6282e-04	           0
+
+Il costo totale stimato è pari a 407135.69 €
+

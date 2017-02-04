@@ -65,6 +65,7 @@ for i_r = 1:length(ris)
     end
     
     j = 0;  % variabile di ciclo while
+    conci = [];
     while ~isempty(cond);
         i_fineConcio = find(cond == ~cond(1), 1, 'first')-1;    % trova il primo valore diverso dal primo elemento (e sottrae 1, i.e. torva l'ultimo elemento in cui tutti i valori sono 1 o 0)
         if isempty(i_fineConcio)

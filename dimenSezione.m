@@ -40,6 +40,7 @@ function [ ris ] = dimenSezione( sezione, armatura, fiv, Nb1, Nb2, fck, Med, Ned
 tipo = 'elastica';
 lock = false;
 precisione = 12;
+ottimizzazione = true;
 
 loadOptionalArgument(varargin);
 
@@ -73,7 +74,6 @@ B_medio = (B(a,1) + B(b,1))/2;  % larghezza media della sezione all'altezza dell
 As.min = 0.26 * mat.cls.f_ctm/mat.steel.f_yk * B_medio * d_lim;  % minimo di armatura secondo normativa, per l'estremo superiore ed inferiore
 
 %% determinazione barre minime
-
 if lock
     length_Nb2 = 1;
     Nb2 = Nb1;
@@ -82,7 +82,7 @@ else
 end
 
 %% determina se deve essere verificato il momento negativo oppure positivo
-if Med < 0.
+if Med < 0
     % se il momento è negativo, si inverte l'asse delle ordinate, in quanto
     % l'origine coincide con il lembo compresso della sezione.
     sezione(:,2) = H - sezione(:,2);    % inversione delle ym
@@ -116,6 +116,15 @@ ris = struct('nb1',0, 'nb2',0, 'fi1', 0, 'fi2', 0, 'As1', 0, 'As2', 0, 'As_tot',
 ris = repmat(ris, length(Nb1)*length_Nb2*length(fiv), 1);
 i_r = 0;
 
+%% Impostazioni per ottimizzazione == false
+% Nel caso non si voglia eseguire il ciclo di ottimizzazione, si riduce il
+% vettore fiv ad 1 elemento in modo tale che coincida con il diametro per
+% le barre fi1. Il secondo elemento di fiv è invece il diametro per fi2.
+if ~ottimizzazione
+    fi2 = fiv(2);
+    fiv = fiv(1);
+end
+
 %% inizio ciclo principale
 for i_nb1 = 1:length(Nb1)
     fi = zeros(2,1);    % vettore 2x1: la componente 1 è relativo al diametro 1, la componente 2 relativa al diametro 2
@@ -137,14 +146,18 @@ for i_nb1 = 1:length(Nb1)
             % il ciclo determina il diametro 2 in combinazione con il
             % diametro 1 per cui Mrd > Med. Il diametro 1 non varia nel
             % ciclo, solo il 2.
-            while Mrd < abs(Med)
+            while Mrd <= abs(Med)
                 
-                % aggiornamento del diametro 2
-                fi(2) = sign(j) * (fiv(i_fiv) + 2 *(j-1));
-                
-                % condizione di interruzione ciclo
-                if fi(2) > max(fiv)
-                    break
+                if ottimizzazione
+                    % aggiornamento del diametro 2
+                    fi(2) = sign(j) * (fiv(i_fiv) + 2 *(j-1));
+                    
+                    % condizione di interruzione ciclo
+                    if fi(2) > max(fiv)
+                        break
+                    end
+                else
+                    fi(2) = j*fi2;
                 end
                 
                 % calcolo dell'area di armatura
@@ -169,12 +182,25 @@ for i_nb1 = 1:length(Nb1)
                     break
                 end
                 
+                % condizione di fine ciclo per caso specifico
+                if ~ottimizzazione
+                    % se fi2 > 0, esegue sempre 2 cicli. Atrimenti
+                    % interrompe il ciclo alla seconda iterazione.
+                    if j == 0 && fi2 ~= 0
+                        Mrd = 0;    
+                    else
+                        % se non si esegue il ciclo di ottimizzazione, si esce
+                        % sempre alla prima iterazione
+                        break
+                    end
+                end
+                
                 % aggiornamento variabile di ciclo
                 j = j + 1;
             end
             
             % salvataggio dei risultati
-            if Mrd >= abs(Med)
+            if Mrd > abs(Med)
                 i_r = i_r + 1;
                 ris(i_r).nb1 = Nb1(i_nb1);
                 ris(i_r).fi1 = fi(1);
@@ -204,12 +230,12 @@ for i_nb1 = 1:length(Nb1)
             end
             
             % condizione di fine ciclo
-            if and(or(fi(2) == 0, fi(1) == fi(2)), Mrd >= abs(Med))
+            if and(or(fi(2) == 0, fi(1) == fi(2)), Mrd > abs(Med))
                 break
             end
             
         end
-        if and(fi(2) == 0, Mrd >= abs(Med))
+        if and(fi(2) == 0, Mrd > abs(Med))
             break
         end
     end
