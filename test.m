@@ -1,26 +1,24 @@
-n1 = 4:5;
-n2 = 0:4;
-f1 = 10:2:24;
-f2 = 10:2:24;
-matrix_of_index = ones(length(n1), length(f1), length(n2), length(f2));
-As = @(n, f) n*pi*f^2/4;
-pos = struct('n1', nan, 'f1', nan, 'n2', nan, 'f2', nan, 'area', nan);
-pos = repmat(pos, length(matrix_of_index),1);
+param_chin = [0.0023227, 0.0006304;...
+    0.0015850, 	0.0005615];
+Kw = 2000; % [kN/m3] Coefficiente di Winkler del terreno
+Qk = 35; % [kN/m3] carico dei pallet
+L.pl = 5.6; %[m] interasse tra le travi di fondazione (luce libera di inflessione della platea)
+L.tr = 5.6; %[m] interasse tra i pali (luce libera di inflessione della trave)
+fun = 'palo.Qed(u*1e3) + Kw*u*L.pl*L.tr';   % funzione obiettivo
+ris = table;
 
-for r = 1:numel(matrix_of_index)
-    index = cell(length(size(matrix_of_index)), 1);
-    [index{:}] = ind2sub(size(matrix_of_index), r);
-    a = As(n1(index{1}), f1(index{2})) + As(n2(index{3}), f2(index{4}));
-    pos(r).n1 = n1(index{1});
-    pos(r).f1 = f1(index{2});
-    pos(r).n2 = n2(index{3});
-    pos(r).f2 = f2(index{4});
-    pos(r).area = a;
-end
+[rows, ~] = size(param_chin);
+for i = 1:rows
+    m = param_chin(i,1);
+    n = param_chin(i,2);
+    palo = chin(m, n);  % legame carico-cedimento alla chin per il palo
+    brent('u', 'Fed', [fun ';'], Qk*L.pl*L.tr, 0, 1);
+    Rz_palo = palo.Qed(u*1e3);
+    K_palo = Rz_palo/u;
+    Rz_gr = Kw*u;
+    tab_ = table(m, n, u, Rz_palo, Rz_gr, Fed, K_palo, Kw);
+    ris = [ris; tab_];
+end        
+Rz_gr_medio = mean(ris.Rz_gr)
+disp(ris)
 
-pos = struct2table(pos);
-[~, sortingIndex] = sort(pos.area);
-posSorted = pos(sortingIndex, :);
-
-
-        

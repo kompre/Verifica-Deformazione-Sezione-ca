@@ -94,13 +94,13 @@ arm.pl.template = [ arm.pl.cf, 0, 0;...
                     geom.pl.h - arm.pl.cf, 0, 0];  % [d, nb, fi] template della configurazione di armatura. La prima riga e l'ultima sono riscritte dalla funzione dimensionante
 
 % armatura superiore
-arm.pl.sup.fiv = 10:2:24;
+arm.pl.sup.fiv = 8:2:24;
 arm.pl.sup.nb1 = 5;
 arm.pl.sup.nb2 = 0;
 arm.pl.sup.lock = 'true';
 
 % armatura  inferiore
-arm.pl.inf.fiv = 10:2:24;
+arm.pl.inf.fiv = 8:2:24;
 arm.pl.inf.nb1 = 5;
 arm.pl.inf.nb2 = 0;
 arm.pl.inf.lock = 'false';
