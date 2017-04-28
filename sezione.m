@@ -13,6 +13,8 @@ classdef sezione
         numRetY = 100
         area_sezione
         peso_sezione
+        Jx
+        Jy
     end
     
     properties (SetAccess = protected)
@@ -56,6 +58,7 @@ classdef sezione
             obj = obj.discretizza;
             obj = obj.area;
             obj = obj.peso;
+            obj = obj.inerzia;
         end
                
         function obj = discretizza(obj)
@@ -69,6 +72,11 @@ classdef sezione
         
         function obj = peso(obj)
             obj.peso_sezione =  obj.area.area_sezione * 1e-6 * obj.peso_cls;
+        end
+        
+        function obj = inerzia(obj)
+            obj.Jx = obj.b^3 * obj.h / 12;  % direzione x (lungo b)
+            obj.Jy = obj.b * obj.h^3 / 12;  % direzione y (lungo y)
         end
     end
     
